@@ -3,7 +3,7 @@ using Therapy.Core.Services;
 using Therapy.Domain.DTOs;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ExerciseController : ControllerBase
 {
     private readonly IExerciseService _exerciseService;

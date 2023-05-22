@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using PhysicalTherapy.Core.Mappings;
 using Therapy.Core.Services;
 using Therapy.Infrastructure.Data;
@@ -28,7 +29,25 @@ namespace TherapyAPI
             // Configure services, dependencies, etc.
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options => {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Therapy API",
+                    Description = "The Therapy API is an ASP.NET Core Web API for managing therapy exercises.  The API is designed to be used by therapists and their patients to track progress and manage therapy exercises.",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Oscar Franco",
+                        Url = new Uri("https://example.com/contact")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Example License",
+                        Url = new Uri("https://example.com/license")
+                    }
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
