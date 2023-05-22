@@ -1,6 +1,7 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using PhysicalTherapy.Core.Mappings;
+using Therapy.Core.Mappings;
 using Therapy.Core.Services;
 using Therapy.Infrastructure.Data;
 using Therapy.Infrastructure.Repositories;
@@ -29,6 +30,8 @@ namespace TherapyAPI
             // Configure services, dependencies, etc.
             services.AddControllers();
             services.AddEndpointsApiExplorer();
+
+            // Swagger configuration
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
@@ -47,7 +50,12 @@ namespace TherapyAPI
                         Url = new Uri("https://example.com/license")
                     }
                 });
+                // using System.Reflection;
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
+            // End Swagger configuration
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

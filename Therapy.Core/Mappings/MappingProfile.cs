@@ -2,7 +2,7 @@ using AutoMapper;
 using Therapy.Domain.DTOs;
 using Therapy.Domain.Entities;
 
-namespace PhysicalTherapy.Core.Mappings
+namespace Therapy.Core.Mappings
 {
     public class MappingProfile : Profile
     {
