@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Therapy.Domain.DTOs;
 using Therapy.Domain.Entities;
 using Therapy.Infrastructure.Repositories;
@@ -9,7 +10,10 @@ namespace Therapy.Core.Services {
         private readonly IRepository<Exercise> _exerciseRepository;
         private readonly IMapper _mapper;
 
-        public ExerciseService(IRepository<Exercise> exerciseRepository, IMapper mapper)
+        public ExerciseService(
+            IRepository<Exercise> exerciseRepository,
+            IMapper mapper
+        )
         {
             _exerciseRepository = exerciseRepository;
             _mapper = mapper;
@@ -17,7 +21,8 @@ namespace Therapy.Core.Services {
 
         public async Task<ExerciseDto> GetByIdAsync(int id)
         {
-            var exercise = await _exerciseRepository.GetByIdAsync(id);
+            var exercise = await _exerciseRepository.GetByIdAsync(id, include: x => x.Include(e => e.Media));
+
             return _mapper.Map<ExerciseDto>(exercise);
         }
 
