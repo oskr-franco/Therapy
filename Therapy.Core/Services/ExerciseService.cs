@@ -1,3 +1,4 @@
+using System.Transactions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Therapy.Domain.DTOs;
@@ -31,9 +32,11 @@ namespace Therapy.Core.Services {
             return await _exerciseRepository.GetAllAsync();
         }
 
-        public async Task AddAsync(ExerciseDto exercise)
+        public async Task<ExerciseDto> AddAsync(ExerciseDto exercise)
         {
-            await _exerciseRepository.AddAsync(_mapper.Map<Exercise>(exercise));
+            var exerciseDb = _mapper.Map<Exercise>(exercise);
+            await _exerciseRepository.AddAsync(exerciseDb);
+            return _mapper.Map<ExerciseDto>(exerciseDb);
         }
 
         public async Task UpdateAsync(ExerciseDto exercise)

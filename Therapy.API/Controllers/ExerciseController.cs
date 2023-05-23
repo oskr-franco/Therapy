@@ -34,9 +34,9 @@ public class ExerciseController : ControllerBase
     /// <response code="200">Returns the exercise.</response>
     /// <response code="404">If the exercise is not found.</response>
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(int id)
     {
-        var exercise = await _exerciseService.GetByIdAsync(1);
+        var exercise = await _exerciseService.GetByIdAsync(id);
         if (exercise == null)
         {
             return NotFound();
@@ -60,8 +60,8 @@ public class ExerciseController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        await _exerciseService.AddAsync(exercise);
-        return CreatedAtAction(nameof(Get), new { id = exercise.Id }, exercise);
+        var response = await _exerciseService.AddAsync(exercise);
+        return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
     }
 
     /// <summary>

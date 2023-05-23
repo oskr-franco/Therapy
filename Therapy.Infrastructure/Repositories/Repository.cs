@@ -93,6 +93,24 @@ namespace Therapy.Infrastructure.Repositories {
         await SaveChangesAsync();
     }
 
+    public async Task AddManyAsync(IEnumerable<T> entities)
+    {
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                await _dbSet.AddRangeAsync(entities);
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw ex;
+            }
+        }
+    }
+
     /// <summary>
     /// Updates an existing entity in the repository.
     /// </summary>
@@ -129,9 +147,9 @@ namespace Therapy.Infrastructure.Repositories {
     /// <summary>
     /// Saves the changes made to the repository asynchronously.
     /// </summary>
-    public async Task<int> SaveChangesAsync()
+    public Task<int> SaveChangesAsync()
     {
-        return await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync();
     }
 
     /// <summary>

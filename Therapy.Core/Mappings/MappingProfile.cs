@@ -10,6 +10,10 @@ namespace Therapy.Core.Mappings
         {
             CreateMap<Exercise, ExerciseDto>();
             CreateMap<ExerciseMedia, ExerciseMediaDto>();
+            CreateMap<ExerciseDto, Exercise>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<ExerciseMediaDto, ExerciseMedia>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }
