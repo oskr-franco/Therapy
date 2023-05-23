@@ -6,6 +6,6 @@ namespace Therapy.Domain.Entities
       public string Name { get; set; }
       public string Description { get; set; }
       public string Instructions { get; set; }
-      public ICollection<ExerciseMedia> Media { get; set; }
+      public ICollection<Media> Media { get; set; }
   }
 }

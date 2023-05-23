@@ -27,9 +27,10 @@ namespace Therapy.Core.Services {
             return _mapper.Map<ExerciseDto>(exercise);
         }
 
-        public async Task<IEnumerable<Exercise>> GetAllAsync()
+        public async Task<IEnumerable<ExerciseDto>> GetAllAsync()
         {
-            return await _exerciseRepository.GetAllAsync();
+            var exercises = await _exerciseRepository.GetAllAsync(include: e => e.Include(x => x.Media));
+            return _mapper.Map<IEnumerable<ExerciseDto>>(exercises);
         }
 
         public async Task<ExerciseDto> AddAsync(ExerciseDto exercise)

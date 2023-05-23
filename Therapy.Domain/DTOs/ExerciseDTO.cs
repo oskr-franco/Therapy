@@ -5,6 +5,6 @@ namespace Therapy.Domain.DTOs {
         public string Name { get; set; }
         public string Description { get; set; }
         public string Instructions { get; set; }
-        public List<ExerciseMediaDto> Media { get; set; }
+        public List<MediaDto> Media { get; set; }
     }
 }

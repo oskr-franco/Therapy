@@ -47,6 +47,20 @@ namespace Therapy.Infrastructure.Repositories {
     }
 
     /// <summary>
+    /// Retrieves all entities of type TEntity.
+    /// </summary>
+    public async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> include = null)
+    {
+        var query = _dbSet.AsQueryable();
+        if (include != null)
+        {
+            query = include(query);
+        }
+
+        return await query.ToListAsync();
+    }
+
+    /// <summary>
     /// Retrieves entities of type TEntity that satisfy the specified condition.
     /// </summary>
     /// <param name="predicate">The condition expressed as a lambda expression.</param>

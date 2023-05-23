@@ -34,7 +34,11 @@ dotnet restore
 You'll need to update the connection string in the appsettings.json file in the Therapy.API project to point to your SQL Server instance.
 
 Finally, run the database migrations to create the database schema:
-
+```bash
+dotnet ef migrations add {NewMigrationName} --project {YourDataProject} --startup-project {YourStartupProject}
+dotnet ef database update
+```
+Example
 ```bash
 dotnet ef migrations add InitialCreate --project Therapy.Infrastructure --startup-project Therapy.API
 dotnet ef database update --project Therapy.Infrastructure --startup-project Therapy.API

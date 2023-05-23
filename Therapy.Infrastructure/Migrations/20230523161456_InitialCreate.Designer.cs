@@ -11,7 +11,7 @@ using Therapy.Infrastructure.Data;
 namespace Therapy.Infrastructure.Migrations
 {
     [DbContext(typeof(TherapyDbContext))]
-    [Migration("20230515061212_InitialCreate")]
+    [Migration("20230523161456_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace Therapy.Infrastructure.Migrations
                     b.ToTable("Exercises");
                 });
 
-            modelBuilder.Entity("Therapy.Domain.Entities.ExerciseMedia", b =>
+            modelBuilder.Entity("Therapy.Domain.Entities.Media", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace Therapy.Infrastructure.Migrations
                     b.ToTable("ExerciseMedia");
                 });
 
-            modelBuilder.Entity("Therapy.Domain.Entities.ExerciseMedia", b =>
+            modelBuilder.Entity("Therapy.Domain.Entities.Media", b =>
                 {
                     b.HasOne("Therapy.Domain.Entities.Exercise", "Exercise")
                         .WithMany("Media")

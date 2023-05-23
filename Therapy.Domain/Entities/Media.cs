@@ -1,5 +1,5 @@
 namespace Therapy.Domain.Entities {
-  public class ExerciseMedia
+  public class Media
   {
       public int Id { get; set; }
       public string Url { get; set; }

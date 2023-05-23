@@ -9,7 +9,7 @@ namespace Therapy.Infrastructure.Data {
         }
 
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<ExerciseMedia> ExerciseMedia { get; set; }
+        public DbSet<Media> Media { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
