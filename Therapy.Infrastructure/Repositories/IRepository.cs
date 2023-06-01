@@ -11,6 +11,7 @@ namespace Therapy.Infrastructure.Repositories
       Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
       Task AddAsync(T entity);
       Task UpdatePartialAsync(T updatedEntity, int id);
+      Task UpdateAsync(T entity);
       Task DeleteAsync(int id);
   }
 }

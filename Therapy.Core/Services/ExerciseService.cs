@@ -45,12 +45,13 @@ namespace Therapy.Core.Services {
             if(id != exercise.Id) {
                 throw new ValidationException("Exercise ID does not match");
             }
-            var existingExercise = await this.GetByIdAsync(id);
+            var existingExercise = await _exerciseRepository.GetByIdAsync(id, include: x => x.Include(e => e.Media));
              if (existingExercise == null)
             {
                 throw new NotFoundException(nameof(Exercise), id);
             }
-            await _exerciseRepository.UpdatePartialAsync(_mapper.Map<Exercise>(exercise), id);
+            _mapper.Map(exercise, existingExercise);
+            await _exerciseRepository.UpdateAsync(existingExercise);
         }
 
         public async Task DeleteAsync(int id)
