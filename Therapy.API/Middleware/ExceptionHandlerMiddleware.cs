@@ -1,5 +1,6 @@
 using System.Net;
 using Therapy.Domain.Exceptions;
+using System.Text.Json;
 
 namespace Therapy.API.Middleware {
     /// <summary>
@@ -35,34 +36,24 @@ namespace Therapy.API.Middleware {
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             context.Response.ContentType = "application/json";
+            ErrorResponse errorResponse;
             if(ex is ValidationException validationException)
             {
                 context.Response.StatusCode = validationException.StatusCode;
-                var errorResponse = new ErrorResponse(validationException).ToString();
-                if (errorResponse != null)
-                {
-                    return context.Response.WriteAsync(errorResponse);
-                }
+                errorResponse = new ErrorResponse(validationException);
             }
             else if(ex is TherapyException therapyException)
             {
                 context.Response.StatusCode = therapyException.StatusCode;
-                var errorResponse = new ErrorResponse(therapyException).ToString();
-                if (errorResponse != null)
-                {
-                    return context.Response.WriteAsync(errorResponse);
-                }
+                errorResponse = new ErrorResponse(therapyException);
             }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                var errorResponse = new ErrorResponse(ex).ToString();
-                if (errorResponse != null)
-                {
-                    return context.Response.WriteAsync(errorResponse);
-                }
+                errorResponse = new ErrorResponse(ex);
             }
-            return Task.CompletedTask;
+
+            return context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
         }
     }
 }

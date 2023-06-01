@@ -7,5 +7,10 @@ namespace Therapy.Domain.Exceptions
         {
             this.StatusCode = (int)ExceptionStatusCode.NotFound;
         }
+        public NotFoundException(int entityId)
+            : base($"The id {entityId} was not found.")
+        {
+            this.StatusCode = (int)ExceptionStatusCode.NotFound;
+        }
     }
 }
