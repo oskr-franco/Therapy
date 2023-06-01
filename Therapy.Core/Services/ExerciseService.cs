@@ -1,9 +1,9 @@
-using System.Transactions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Therapy.Domain.DTOs;
 using Therapy.Domain.Entities;
 using Therapy.Infrastructure.Repositories;
+using Therapy.Domain.Exceptions;
 
 namespace Therapy.Core.Services {
     public class ExerciseService : IExerciseService
@@ -40,19 +40,22 @@ namespace Therapy.Core.Services {
             return _mapper.Map<ExerciseDto>(exerciseDb);
         }
 
-        public async Task UpdateAsync(ExerciseDto exercise)
+        public async Task UpdateAsync(int id, ExerciseDto exercise)
         {
+            if(id != exercise.Id) {
+                throw new ValidationException("Exercise ID does not match");
+            }
+            var existingExercise = await this.GetByIdAsync(id);
+             if (existingExercise == null)
+            {
+                throw new NotFoundException(nameof(Exercise), id);
+            }
             await _exerciseRepository.UpdateAsync(_mapper.Map<Exercise>(exercise));
         }
 
         public async Task DeleteAsync(int id)
         {
             await _exerciseRepository.DeleteAsync(id);
-        }
-
-        public async Task DeleteAsync(ExerciseDto exercise)
-        {
-            await _exerciseRepository.DeleteAsync(_mapper.Map<Exercise>(exercise));
         }
     }
 }

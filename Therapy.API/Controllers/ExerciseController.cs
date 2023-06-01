@@ -1,12 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Therapy.Core.Services;
 using Therapy.Domain.DTOs;
-
+/// <summary>
+/// Controller for managing exercises.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class ExerciseController : ControllerBase
 {
     private readonly IExerciseService _exerciseService;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExerciseController"/> class.
+    /// </summary>
+    /// <param name="exerciseService">The exercise service.</param>
 
     public ExerciseController(IExerciseService exerciseService)
     {
@@ -77,18 +83,7 @@ public class ExerciseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] ExerciseDto exercise)
     {
-        if (id != exercise.Id)
-        {
-            return BadRequest();
-        }
-
-        var existingExercise = await _exerciseService.GetByIdAsync(id);
-        if (existingExercise == null)
-        {
-            return NotFound();
-        }
-
-        await _exerciseService.UpdateAsync(exercise);
+        await _exerciseService.UpdateAsync(id, exercise);
         return NoContent();
     }
 
@@ -103,13 +98,7 @@ public class ExerciseController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var exercise = await _exerciseService.GetByIdAsync(id);
-        if (exercise == null)
-        {
-            return NotFound();
-        }
-
-        await _exerciseService.DeleteAsync(exercise);
+        await _exerciseService.DeleteAsync(id);
         return NoContent();
     }
 }

@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Therapy.API.Middleware;
 using Therapy.Core.Mappings;
 using Therapy.Core.Services;
 using Therapy.Infrastructure.Data;
@@ -67,6 +68,7 @@ namespace TherapyAPI
                 app.UseSwaggerUI();
             }
             // app.UsePathBase(new PathString("/api"));
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

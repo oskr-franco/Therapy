@@ -8,8 +8,7 @@ namespace Therapy.Core.Services
       Task<ExerciseDto> GetByIdAsync(int id);
       Task<IEnumerable<ExerciseDto>> GetAllAsync();
       Task<ExerciseDto> AddAsync(ExerciseDto exercise);
-      Task UpdateAsync(ExerciseDto exercise);
+      Task UpdateAsync(int id, ExerciseDto exercise);
       Task DeleteAsync(int id);
-      Task DeleteAsync(ExerciseDto exercise);
   }
 }
