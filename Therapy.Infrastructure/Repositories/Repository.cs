@@ -136,6 +136,45 @@ namespace Therapy.Infrastructure.Repositories {
         await SaveChangesAsync();
     }
 
+
+    public async Task UpdatePartialAsync(T updatedEntity, int id)
+    {
+        var entity = await GetByIdAsync(id);
+        if (entity == null)
+        {
+            throw new Exception("Entity not found");
+        }
+
+        var entityType = typeof(T);
+        var properties = entityType.GetProperties();
+
+        foreach (var property in properties)
+        {
+            var updatedValue = property.GetValue(updatedEntity);
+
+            if (updatedValue != null)
+            {
+                var isNavigation = _context.Model.FindEntityType(entityType).FindNavigation(property.Name) != null;
+
+                if (isNavigation)
+                {
+                    // Navigation property
+                    var navigationEntry = _context.Entry(entity).Navigation(property.Name);
+                    navigationEntry.CurrentValue = updatedValue as object;
+                }
+                else
+                {
+                    // Regular property
+                    var propertyEntry = _context.Entry(entity).Property(property.Name);
+                    propertyEntry.CurrentValue = updatedValue;
+                }
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+
     /// <summary>
     /// Removes an entity from the repository.
     /// </summary>
@@ -153,14 +192,12 @@ namespace Therapy.Infrastructure.Repositories {
     public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
-        if (entity != null)
+        if (entity == null)
         {
             throw new NotFoundException(id);
         }
-        if (entity != null)
-        {
-            await DeleteAsync(entity);
-        }
+
+        await DeleteAsync(entity);
     }
 
     /// <summary>

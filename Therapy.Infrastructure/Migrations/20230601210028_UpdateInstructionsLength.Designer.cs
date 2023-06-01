@@ -11,8 +11,8 @@ using Therapy.Infrastructure.Data;
 namespace Therapy.Infrastructure.Migrations
 {
     [DbContext(typeof(TherapyDbContext))]
-    [Migration("20230523161456_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230601210028_UpdateInstructionsLength")]
+    partial class UpdateInstructionsLength
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,15 +34,17 @@ namespace Therapy.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("VARCHAR");
 
                     b.Property<string>("Instructions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("VARCHAR");
 
                     b.HasKey("Id");
 
@@ -57,10 +59,6 @@ namespace Therapy.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
@@ -69,13 +67,14 @@ namespace Therapy.Infrastructure.Migrations
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("VARCHAR");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("ExerciseMedia");
+                    b.ToTable("Media");
                 });
 
             modelBuilder.Entity("Therapy.Domain.Entities.Media", b =>

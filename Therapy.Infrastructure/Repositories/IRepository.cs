@@ -10,7 +10,7 @@ namespace Therapy.Infrastructure.Repositories
       Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> include);
       Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
       Task AddAsync(T entity);
-      Task UpdateAsync(T entity);
+      Task UpdatePartialAsync(T updatedEntity, int id);
       Task DeleteAsync(int id);
   }
 }

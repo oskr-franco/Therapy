@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Therapy.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using Therapy.Infrastructure.Data;
 namespace Therapy.Infrastructure.Migrations
 {
     [DbContext(typeof(TherapyDbContext))]
-    partial class TherapyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601205303_UpdateUrlLength")]
+    partial class UpdateUrlLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,6 @@ namespace Therapy.Infrastructure.Migrations
 
                     b.Property<string>("Instructions")
                         .IsRequired()
-                        .HasMaxLength(8000)
                         .HasColumnType("VARCHAR");
 
                     b.Property<string>("Name")

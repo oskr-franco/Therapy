@@ -40,7 +40,7 @@ namespace Therapy.Core.Services {
             return _mapper.Map<ExerciseDTO>(exerciseDb);
         }
 
-        public async Task UpdateAsync(int id, ExerciseDTO exercise)
+        public async Task UpdateAsync(int id, ExerciseUpdateDTO exercise)
         {
             if(id != exercise.Id) {
                 throw new ValidationException("Exercise ID does not match");
@@ -50,7 +50,7 @@ namespace Therapy.Core.Services {
             {
                 throw new NotFoundException(nameof(Exercise), id);
             }
-            await _exerciseRepository.UpdateAsync(_mapper.Map<Exercise>(exercise));
+            await _exerciseRepository.UpdatePartialAsync(_mapper.Map<Exercise>(exercise), id);
         }
 
         public async Task DeleteAsync(int id)

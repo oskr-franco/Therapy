@@ -16,9 +16,9 @@ namespace Therapy.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Instructions = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "VARCHAR(2000)", maxLength: 2000, nullable: false),
+                    Instructions = table.Column<string>(type: "VARCHAR", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,21 +26,20 @@ namespace Therapy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExerciseMedia",
+                name: "Media",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "VARCHAR", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExerciseId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseMedia", x => x.Id);
+                    table.PrimaryKey("PK_Media", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExerciseMedia_Exercises_ExerciseId",
+                        name: "FK_Media_Exercises_ExerciseId",
                         column: x => x.ExerciseId,
                         principalTable: "Exercises",
                         principalColumn: "Id",
@@ -48,8 +47,8 @@ namespace Therapy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseMedia_ExerciseId",
-                table: "ExerciseMedia",
+                name: "IX_Media_ExerciseId",
+                table: "Media",
                 column: "ExerciseId");
         }
 
@@ -57,7 +56,7 @@ namespace Therapy.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ExerciseMedia");
+                name: "Media");
 
             migrationBuilder.DropTable(
                 name: "Exercises");
