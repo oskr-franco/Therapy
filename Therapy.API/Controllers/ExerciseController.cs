@@ -60,7 +60,7 @@ public class ExerciseController : ControllerBase
     /// <response code="409">If the exercise already exists.</response>
     /// <response code="500">If there was an internal server error.</response>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ExerciseDto exercise)
+    public async Task<IActionResult> Create([FromBody] ExerciseDTO exercise)
     {
         if (!ModelState.IsValid)
         {
@@ -81,7 +81,7 @@ public class ExerciseController : ControllerBase
     /// <response code="404">If the exercise is not found.</response>
     /// <response code="500">If there was an internal server error.</response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ExerciseDto exercise)
+    public async Task<IActionResult> Update(int id, [FromBody] ExerciseDTO exercise)
     {
         await _exerciseService.UpdateAsync(id, exercise);
         return NoContent();

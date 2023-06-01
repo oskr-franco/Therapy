@@ -20,27 +20,27 @@ namespace Therapy.Core.Services {
             _mapper = mapper;
         }
 
-        public async Task<ExerciseDto> GetByIdAsync(int id)
+        public async Task<ExerciseDTO> GetByIdAsync(int id)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(id, include: x => x.Include(e => e.Media));
 
-            return _mapper.Map<ExerciseDto>(exercise);
+            return _mapper.Map<ExerciseDTO>(exercise);
         }
 
-        public async Task<IEnumerable<ExerciseDto>> GetAllAsync()
+        public async Task<IEnumerable<ExerciseDTO>> GetAllAsync()
         {
             var exercises = await _exerciseRepository.GetAllAsync(include: e => e.Include(x => x.Media));
-            return _mapper.Map<IEnumerable<ExerciseDto>>(exercises);
+            return _mapper.Map<IEnumerable<ExerciseDTO>>(exercises);
         }
 
-        public async Task<ExerciseDto> AddAsync(ExerciseDto exercise)
+        public async Task<ExerciseDTO> AddAsync(ExerciseDTO exercise)
         {
             var exerciseDb = _mapper.Map<Exercise>(exercise);
             await _exerciseRepository.AddAsync(exerciseDb);
-            return _mapper.Map<ExerciseDto>(exerciseDb);
+            return _mapper.Map<ExerciseDTO>(exerciseDb);
         }
 
-        public async Task UpdateAsync(int id, ExerciseDto exercise)
+        public async Task UpdateAsync(int id, ExerciseDTO exercise)
         {
             if(id != exercise.Id) {
                 throw new ValidationException("Exercise ID does not match");

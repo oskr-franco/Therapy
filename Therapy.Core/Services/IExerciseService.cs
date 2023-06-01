@@ -5,10 +5,10 @@ namespace Therapy.Core.Services
 {
   public interface IExerciseService
   {
-      Task<ExerciseDto> GetByIdAsync(int id);
-      Task<IEnumerable<ExerciseDto>> GetAllAsync();
-      Task<ExerciseDto> AddAsync(ExerciseDto exercise);
-      Task UpdateAsync(int id, ExerciseDto exercise);
+      Task<ExerciseDTO> GetByIdAsync(int id);
+      Task<IEnumerable<ExerciseDTO>> GetAllAsync();
+      Task<ExerciseDTO> AddAsync(ExerciseDTO exercise);
+      Task UpdateAsync(int id, ExerciseDTO exercise);
       Task DeleteAsync(int id);
   }
 }

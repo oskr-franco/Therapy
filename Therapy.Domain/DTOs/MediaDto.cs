@@ -1,5 +1,5 @@
 namespace Therapy.Domain.DTOs {
-  public class MediaDto
+  public class MediaDTO
   {
       public int Id { get; set; }
       public string Url { get; set; }
