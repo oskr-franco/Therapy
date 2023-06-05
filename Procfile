@@ -1,1 +1,1 @@
-web: dotnet ./app/Therapy.API.dll
+web: cd ./app && dotnet ./app/Therapy.API.dll
