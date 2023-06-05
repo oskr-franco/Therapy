@@ -29,6 +29,12 @@ git clone https://github.com/oskr-franco/Therapy.git
 dotnet restore
 ```
 
+## Publish 
+
+```bash
+dotnet publish -o site
+dotnet publish -c Release -o ./app/ Therapy.API/Therapy.API.csproj
+```
 ## Database
 
 You'll need to update the connection string in the appsettings.json file in the Therapy.API project to point to your SQL Server instance.
