@@ -33,7 +33,7 @@ namespace Therapy.Core.Services {
             return _mapper.Map<IEnumerable<ExerciseDTO>>(exercises);
         }
 
-        public async Task<ExerciseDTO> AddAsync(ExerciseDTO exercise)
+        public async Task<ExerciseDTO> AddAsync(ExerciseCreateDTO exercise)
         {
             var exerciseDb = _mapper.Map<Exercise>(exercise);
             await _exerciseRepository.AddAsync(exerciseDb);

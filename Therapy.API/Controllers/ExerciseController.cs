@@ -60,7 +60,7 @@ public class ExerciseController : ControllerBase
     /// <response code="409">If the exercise already exists.</response>
     /// <response code="500">If there was an internal server error.</response>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ExerciseDTO exercise)
+    public async Task<IActionResult> Create([FromBody] ExerciseCreateDTO exercise)
     {
         if (!ModelState.IsValid)
         {
