@@ -20,6 +20,7 @@ namespace Therapy.Core.Mappings
             CreateMap<MediaDTO, Media>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MediaUpdateDTO, Media>();
+            CreateMap<MediaCreateDTO, Media>();
         }
     }
 }
