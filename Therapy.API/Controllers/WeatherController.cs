@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController : ApiController
 {
     [HttpGet]
     public IActionResult Get()

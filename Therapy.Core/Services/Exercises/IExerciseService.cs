@@ -1,7 +1,6 @@
-using Therapy.Domain.DTOs;
-using Therapy.Domain.Entities;
+using Therapy.Domain.DTOs.Exercise;
 
-namespace Therapy.Core.Services
+namespace Therapy.Core.Services.Exercises
 {
   public interface IExerciseService
   {

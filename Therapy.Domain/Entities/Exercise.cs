@@ -16,5 +16,8 @@ namespace Therapy.Domain.Entities
       [MaxLength(8000)]
       public string Instructions { get; set; }
       public ICollection<Media> Media { get; set; }
+
+      public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; }
+
   }
 }

@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Therapy.API.Middleware;
 using Therapy.Core.Mappings;
-using Therapy.Core.Services;
+using Therapy.Core.Services.Exercises;
+using Therapy.Core.Services.Workouts;
 using Therapy.Infrastructure.Data;
 using Therapy.Infrastructure.Repositories;
 
@@ -25,8 +26,9 @@ namespace TherapyAPI
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IExerciseService, ExerciseService>();
+            services.AddTransient<IWorkoutService, WorkoutService>();
 
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(ExerciseMappingProfile));
 
             // Configure services, dependencies, etc.
             services.AddControllers();
@@ -73,7 +75,10 @@ namespace TherapyAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                // endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

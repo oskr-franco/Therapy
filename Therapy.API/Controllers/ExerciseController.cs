@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Therapy.Core.Services;
-using Therapy.Domain.DTOs;
+using Therapy.Core.Services.Exercises;
+using Therapy.Domain.DTOs.Exercise;
 /// <summary>
 /// Controller for managing exercises.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
-public class ExerciseController : ControllerBase
+public class ExerciseController : ApiController
 {
     private readonly IExerciseService _exerciseService;
     /// <summary>

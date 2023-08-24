@@ -1,4 +1,6 @@
-namespace Therapy.Domain.DTOs {
+using Therapy.Domain.DTOs.Media;
+
+namespace Therapy.Domain.DTOs.Exercise {
     public class ExerciseDTO
     {
         public int Id { get; set; }

@@ -1,12 +1,13 @@
 using AutoMapper;
-using Therapy.Domain.DTOs;
+using Therapy.Domain.DTOs.Exercise;
+using Therapy.Domain.DTOs.Media;
 using Therapy.Domain.Entities;
 
 namespace Therapy.Core.Mappings
 {
-    public class MappingProfile : Profile
+    public class ExerciseMappingProfile : Profile
     {
-        public MappingProfile()
+        public ExerciseMappingProfile()
         {
             CreateMap<Exercise, ExerciseDTO>();
 

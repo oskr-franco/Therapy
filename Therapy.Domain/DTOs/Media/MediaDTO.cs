@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Therapy.Domain.DTOs {
+namespace Therapy.Domain.DTOs.Media {
   public class MediaDTO
   {
       public int Id { get; set; }

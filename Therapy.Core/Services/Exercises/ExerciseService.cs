@@ -1,11 +1,11 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Therapy.Domain.DTOs;
+using Therapy.Domain.DTOs.Exercise;
 using Therapy.Domain.Entities;
 using Therapy.Infrastructure.Repositories;
 using Therapy.Domain.Exceptions;
 
-namespace Therapy.Core.Services {
+namespace Therapy.Core.Services.Exercises {
     public class ExerciseService : IExerciseService
     {
         private readonly IRepository<Exercise> _exerciseRepository;
@@ -36,8 +36,8 @@ namespace Therapy.Core.Services {
         public async Task<ExerciseDTO> AddAsync(ExerciseCreateDTO exercise)
         {
             var exerciseDb = _mapper.Map<Exercise>(exercise);
-            await _exerciseRepository.AddAsync(exerciseDb);
-            return _mapper.Map<ExerciseDTO>(exerciseDb);
+            var updatedExercise =await _exerciseRepository.AddAsync(exerciseDb);
+            return _mapper.Map<ExerciseDTO>(updatedExercise);
         }
 
         public async Task UpdateAsync(int id, ExerciseUpdateDTO exercise)

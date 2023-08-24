@@ -102,10 +102,11 @@ namespace Therapy.Infrastructure.Repositories {
     /// Adds a new entity to the repository.
     /// </summary>
     /// <param name="entity">The entity to add.</param>
-    public async Task AddAsync(T entity)
+    public async Task<T> AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
         await SaveChangesAsync();
+        return entity;
     }
 
     public async Task AddManyAsync(IEnumerable<T> entities)
@@ -134,44 +135,6 @@ namespace Therapy.Infrastructure.Repositories {
     {
         _dbSet.Update(entity);
         await SaveChangesAsync();
-    }
-
-
-    public async Task UpdatePartialAsync(T updatedEntity, int id)
-    {
-        var entity = await GetByIdAsync(id);
-        if (entity == null)
-        {
-            throw new Exception("Entity not found");
-        }
-
-        var entityType = typeof(T);
-        var properties = entityType.GetProperties();
-
-        foreach (var property in properties)
-        {
-            var updatedValue = property.GetValue(updatedEntity);
-
-            if (updatedValue != null)
-            {
-                var isNavigation = _context.Model.FindEntityType(entityType).FindNavigation(property.Name) != null;
-
-                if (isNavigation)
-                {
-                    // Navigation property
-                    var navigationEntry = _context.Entry(entity).Navigation(property.Name);
-                    navigationEntry.CurrentValue = updatedValue as object;
-                }
-                else
-                {
-                    // Regular property
-                    var propertyEntry = _context.Entry(entity).Property(property.Name);
-                    propertyEntry.CurrentValue = updatedValue;
-                }
-            }
-        }
-
-        await _context.SaveChangesAsync();
     }
 
 
