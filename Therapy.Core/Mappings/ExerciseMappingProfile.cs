@@ -9,19 +9,14 @@ namespace Therapy.Core.Mappings
     {
         public ExerciseMappingProfile()
         {
+            CreateMap<ExerciseCreateDTO, Exercise>();
+            CreateMap<MediaCreateDTO, Media>();
             CreateMap<Exercise, ExerciseDTO>();
-
-            CreateMap<ExerciseCreateDTO, Exercise>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<IEnumerable<ExerciseDTO>, IEnumerable<Exercise>>();
+            CreateMap<Media, MediaDTO>();
             CreateMap<ExerciseUpdateDTO, Exercise>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-
-            CreateMap<Media, MediaDTO>();
-            CreateMap<MediaDTO, Media>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MediaUpdateDTO, Media>();
-            CreateMap<MediaCreateDTO, Media>();
+            
         }
     }
 }
