@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Therapy.Core.Services.Exercises;
 using Therapy.Domain.DTOs.Exercise;
+using Therapy.Domain.Models;
 /// <summary>
 /// Controller for managing exercises.
 /// </summary>
@@ -24,9 +25,9 @@ public class ExerciseController : ApiController
     /// <response code="200">Returns the list of exercises.</response>
     /// <response code="404">If no exercises are found.</response>
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationFilter filter)
     {
-        var exercises = await _exerciseService.GetAllAsync();
+        var exercises = await _exerciseService.GetAllAsync(filter);
         return Ok(exercises);
     }
 

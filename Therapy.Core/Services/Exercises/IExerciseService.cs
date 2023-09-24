@@ -1,11 +1,12 @@
 using Therapy.Domain.DTOs.Exercise;
+using Therapy.Domain.Models;
 
 namespace Therapy.Core.Services.Exercises
 {
   public interface IExerciseService
   {
       Task<ExerciseDTO> GetByIdAsync(int id);
-      Task<IEnumerable<ExerciseDTO>> GetAllAsync();
+      Task<PaginationResponse<ExerciseDTO>> GetAllAsync(PaginationFilter filter);
       Task<ExerciseDTO> AddAsync(ExerciseCreateDTO exercise);
       Task UpdateAsync(int id, ExerciseUpdateDTO exercise);
       Task DeleteAsync(int id);

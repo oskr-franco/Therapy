@@ -15,6 +15,10 @@ namespace Therapy.Infrastructure.Data {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+             modelBuilder.Entity<Exercise>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
             modelBuilder.Entity<Exercise>()
                 .HasMany(e => e.Media)
                 .WithOne(m => m.Exercise)
@@ -32,6 +36,10 @@ namespace Therapy.Infrastructure.Data {
                 .HasOne(we => we.Exercise)
                 .WithMany(e => e.WorkoutExercises)
                 .HasForeignKey(we => we.ExerciseId);
+
+            modelBuilder.Entity<Workout>()
+                .Property(w => w.CreatedAt)
+                .HasDefaultValueSql("GETDATE()");
             
             base.OnModelCreating(modelBuilder);
         }

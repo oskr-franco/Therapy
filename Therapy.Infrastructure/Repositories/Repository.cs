@@ -38,6 +38,29 @@ namespace Therapy.Infrastructure.Repositories {
 
         return await query.FirstOrDefaultAsync(GetLambdaByID(id));
     }
+
+    /// <summary>
+    /// Retrieves all entities of type TEntity.
+    /// </summary>
+    public IQueryable<T> AsQueryable()
+    {
+        return _dbSet.AsQueryable();
+    }
+
+    /// <summary>
+    /// Retrieves all entities of type TEntity.
+    /// </summary>
+    public IQueryable<T> AsQueryable(Func<IQueryable<T>, IQueryable<T>> include)
+    {
+        var query = _dbSet.AsQueryable();
+
+        if (include != null)
+        {
+            query = include(query);
+        }
+
+        return query;
+    }
     
     /// <summary>
     /// Retrieves all entities of type TEntity.

@@ -41,4 +41,22 @@ public class WorkoutController: ApiController {
         await _workoutService.DeleteAsync(id);
         return NoContent();
     }
+
+    // [HttpPost("{id}/exercises")]
+    // public async Task<IActionResult> AddExercise(int id, WorkoutExerciseCreateDTO workoutExercise) {
+    //     var updatedWorkout = await _workoutService.AddExerciseAsync(id, workoutExercise);
+    //     return Ok(updatedWorkout);
+    // }
+
+    // [HttpDelete("{id}/exercises/{exerciseId}")]
+    // public async Task<IActionResult> RemoveExercise(int id, int exerciseId) {
+    //     await _workoutService.RemoveExerciseAsync(id, exerciseId);
+    //     return NoContent();
+    // }
+
+    // [HttpPut("{id}/exercises/{exerciseId}")]
+    // public async Task<IActionResult> UpdateExercise(int id, int exerciseId, WorkoutExerciseUpdateDTO workoutExercise) {
+    //     await _workoutService.UpdateExerciseAsync(id, exerciseId, workoutExercise);
+    //     return NoContent();
+    // }
 }

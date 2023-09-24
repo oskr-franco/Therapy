@@ -1,9 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Therapy.Core.Utils;
 using Therapy.Domain.DTOs.Exercise;
 using Therapy.Domain.Entities;
-using Therapy.Infrastructure.Repositories;
 using Therapy.Domain.Exceptions;
+using Therapy.Domain.Models;
+using Therapy.Infrastructure.Repositories;
+using Therapy.Core.Extensions;
 
 namespace Therapy.Core.Services.Exercises {
     public class ExerciseService : IExerciseService
@@ -27,16 +30,24 @@ namespace Therapy.Core.Services.Exercises {
             return _mapper.Map<ExerciseDTO>(exercise);
         }
 
-        public async Task<IEnumerable<ExerciseDTO>> GetAllAsync()
+        public async Task<PaginationResponse<ExerciseDTO>> GetAllAsync(PaginationFilter filter)
         {
-            var exercises = await _exerciseRepository.GetAllAsync(include: e => e.Include(x => x.Media));
-            return _mapper.Map<IEnumerable<ExerciseDTO>>(exercises);
+            var exercisesQuery = _exerciseRepository.AsQueryable(include: e => e.Include(x => x.Media));
+
+            var exercises =
+                    await exercisesQuery
+                    .Paginate(
+                      filter,
+                      (search) => e => e.Name.Contains(search) || e.Description.Contains(search) || e.Instructions.Contains(search)
+                    )
+                    .ToPaginationResponse<Exercise, ExerciseDTO>(_exerciseRepository, _mapper);
+            return exercises;
         }
 
         public async Task<ExerciseDTO> AddAsync(ExerciseCreateDTO exercise)
         {
             var exerciseDb = _mapper.Map<Exercise>(exercise);
-            var updatedExercise =await _exerciseRepository.AddAsync(exerciseDb);
+            var updatedExercise = await _exerciseRepository.AddAsync(exerciseDb);
             return _mapper.Map<ExerciseDTO>(updatedExercise);
         }
 

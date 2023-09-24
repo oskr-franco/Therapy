@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Therapy.Domain.Entities
 {
-  public class Exercise
+  public class Exercise : BaseEntity
   {
-      public int Id { get; set; }
       [Column(TypeName = "VARCHAR")]
       [MaxLength(200)]
       public string Name { get; set; }
@@ -14,9 +13,8 @@ namespace Therapy.Domain.Entities
       public string Description { get; set; }
       [Column(TypeName = "VARCHAR")]
       [MaxLength(8000)]
-      public string Instructions { get; set; }
+      public string? Instructions { get; set; }
       public ICollection<Media> Media { get; set; }
-
       public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; }
 
   }
