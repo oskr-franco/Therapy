@@ -11,7 +11,7 @@ public class WorkoutController: ApiController {
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] PaginationFilter filter) {
+    public async Task<IActionResult> GetAll([FromQuery] WorkoutPaginationFilter filter) {
         var workouts = await _workoutService.GetAllAsync(filter);
         return Ok(workouts);
     }

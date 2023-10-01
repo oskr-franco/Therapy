@@ -1,12 +1,12 @@
 
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Therapy.Core.Extensions;
 using Therapy.Domain.DTOs.Workout;
 using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
-using Therapy.Infrastructure.Repositories;
-using Therapy.Core.Extensions;
 using Therapy.Domain.Models;
+using Therapy.Infrastructure.Repositories;
 
 namespace Therapy.Core.Services.Workouts {
     public class WorkoutService : IWorkoutService
@@ -32,9 +32,9 @@ namespace Therapy.Core.Services.Workouts {
             return _mapper.Map<WorkoutDTO>(workout);
         }
 
-        public async Task<PaginationResponse<WorkoutDTO>> GetAllAsync(PaginationFilter filter)
+        public async Task<PaginationResponse<WorkoutDTO>> GetAllAsync(WorkoutPaginationFilter filter)
         {
-            var workoutsQuery = _workoutRepository.AsQueryable(include: e => e.Include(x => x.WorkoutExercises));
+            var workoutsQuery = _workoutRepository.AsQueryableIncludeByFilter(filter);
             var earliestDate = _workoutRepository.AsQueryable().Min(e => (DateTime?)e.CreatedAt);
             var latestDate = _workoutRepository.AsQueryable().Max(e => (DateTime?)e.CreatedAt);
             var workouts =

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Therapy.Core.Utils;
 using Therapy.Domain.Entities;
 using Therapy.Domain.Models;
-using Therapy.Infrastructure.Repositories;
 
 namespace Therapy.Core.Extensions
 {
