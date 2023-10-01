@@ -3,13 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Therapy.Domain.Entities
 {
-  public class Workout
+  public class Workout: BaseEntity
   {
-    public int Id { get; set; }
     [Column(TypeName = "VARCHAR")]
     [MaxLength(200)]
     public string Name { get; set; }
-    public DateTime CreatedAt { get; set; }
     public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; }
   }
 }

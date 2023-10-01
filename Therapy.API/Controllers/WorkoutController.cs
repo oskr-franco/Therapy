@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Therapy.Core.Services.Workouts;
 using Therapy.Domain.DTOs.Workout;
+using Therapy.Domain.Models;
 
 public class WorkoutController: ApiController {
     private readonly IWorkoutService _workoutService;
@@ -10,8 +11,8 @@ public class WorkoutController: ApiController {
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() {
-        var workouts = await _workoutService.GetAllAsync();
+    public async Task<IActionResult> GetAll(PaginationFilter filter) {
+        var workouts = await _workoutService.GetAllAsync(filter);
         return Ok(workouts);
     }
     

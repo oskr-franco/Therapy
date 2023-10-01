@@ -57,17 +57,15 @@ namespace Therapy.Core.Extensions
 
     public static async Task<PaginationResponse<TDto>> ToPaginationResponse<TEntity, TDto> (
       this IQueryable<TEntity> query,
-      IRepository<TEntity> repository,
-      IMapper mapper
+      IMapper mapper,
+      DateTime? earliestDate,
+      DateTime? latestDate
     ) where TEntity : BaseEntity {
 
       var items = await query.ToListAsync();
 
       var firstItem = items.FirstOrDefault();
       var lastItem = items.LastOrDefault();
-
-      DateTime? earliestDate = repository.AsQueryable().Min(e => (DateTime?)e.CreatedAt);
-      DateTime? latestDate = repository.AsQueryable().Max(e => (DateTime?)e.CreatedAt);
 
       return new PaginationResponse<TDto>
       {

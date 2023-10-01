@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Therapy.Core.Utils;
 using Therapy.Domain.DTOs.Exercise;
 using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
@@ -32,15 +31,17 @@ namespace Therapy.Core.Services.Exercises {
 
         public async Task<PaginationResponse<ExerciseDTO>> GetAllAsync(PaginationFilter filter)
         {
+            
             var exercisesQuery = _exerciseRepository.AsQueryable(include: e => e.Include(x => x.Media));
-
+            var earliestDate = _exerciseRepository.AsQueryable().Min(e => (DateTime?)e.CreatedAt);
+            var latestDate = _exerciseRepository.AsQueryable().Max(e => (DateTime?)e.CreatedAt);
             var exercises =
                     await exercisesQuery
                     .Paginate(
                       filter,
                       (search) => e => e.Name.Contains(search) || e.Description.Contains(search) || e.Instructions.Contains(search)
                     )
-                    .ToPaginationResponse<Exercise, ExerciseDTO>(_exerciseRepository, _mapper);
+                    .ToPaginationResponse<Exercise, ExerciseDTO>(_mapper, earliestDate, latestDate);
             return exercises;
         }
 

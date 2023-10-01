@@ -5,6 +5,8 @@ using Therapy.Domain.DTOs.Workout;
 using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
 using Therapy.Infrastructure.Repositories;
+using Therapy.Core.Extensions;
+using Therapy.Domain.Models;
 
 namespace Therapy.Core.Services.Workouts {
     public class WorkoutService : IWorkoutService
@@ -30,10 +32,19 @@ namespace Therapy.Core.Services.Workouts {
             return _mapper.Map<WorkoutDTO>(workout);
         }
 
-        public async Task<IEnumerable<WorkoutDTO>> GetAllAsync()
+        public async Task<PaginationResponse<WorkoutDTO>> GetAllAsync(PaginationFilter filter)
         {
-            var workouts = await _workoutRepository.GetAllAsync(include: e => e.Include(x => x.WorkoutExercises));
-            return _mapper.Map<IEnumerable<WorkoutDTO>>(workouts);
+            var workoutsQuery = _workoutRepository.AsQueryable(include: e => e.Include(x => x.WorkoutExercises));
+            var earliestDate = _workoutRepository.AsQueryable().Min(e => (DateTime?)e.CreatedAt);
+            var latestDate = _workoutRepository.AsQueryable().Max(e => (DateTime?)e.CreatedAt);
+            var workouts =
+                    await workoutsQuery
+                    .Paginate(
+                      filter,
+                      (search) => e => e.Name.Contains(search)
+                    )
+                    .ToPaginationResponse<Workout, WorkoutDTO>(_mapper, earliestDate, latestDate);
+            return workouts;
         }
 
         public async Task<WorkoutDTO> AddAsync(WorkoutCreateDTO workout)
