@@ -20,6 +20,7 @@ namespace Therapy.Infrastructure.Migrations
                     Name = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "VARCHAR(2000)", maxLength: 2000, nullable: false),
                     Instructions = table.Column<string>(type: "VARCHAR(8000)", maxLength: 8000, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
@@ -34,6 +35,7 @@ namespace Therapy.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
@@ -68,8 +70,8 @@ namespace Therapy.Infrastructure.Migrations
                 {
                     WorkoutId = table.Column<int>(type: "int", nullable: false),
                     ExerciseId = table.Column<int>(type: "int", nullable: false),
-                    Sets = table.Column<int>(type: "int", nullable: false),
-                    Reps = table.Column<int>(type: "int", nullable: false),
+                    Sets = table.Column<short>(type: "smallint", nullable: false),
+                    Reps = table.Column<short>(type: "smallint", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: true)
                 },
                 constraints: table =>

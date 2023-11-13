@@ -12,7 +12,7 @@ using Therapy.Infrastructure.Data;
 namespace Therapy.Infrastructure.Migrations
 {
     [DbContext(typeof(TherapyDbContext))]
-    [Migration("20230924182912_InitialCreate")]
+    [Migration("20231113164711_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -46,6 +46,9 @@ namespace Therapy.Infrastructure.Migrations
                     b.Property<string>("Instructions")
                         .HasMaxLength(8000)
                         .HasColumnType("VARCHAR");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -96,6 +99,9 @@ namespace Therapy.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -117,11 +123,11 @@ namespace Therapy.Infrastructure.Migrations
                     b.Property<TimeSpan?>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<int>("Reps")
-                        .HasColumnType("int");
+                    b.Property<short>("Reps")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("Sets")
-                        .HasColumnType("int");
+                    b.Property<short>("Sets")
+                        .HasColumnType("smallint");
 
                     b.HasKey("WorkoutId", "ExerciseId");
 

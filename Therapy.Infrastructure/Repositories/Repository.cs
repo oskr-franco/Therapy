@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
 using Therapy.Infrastructure.Data;
 
 namespace Therapy.Infrastructure.Repositories {
-  public class Repository<T> : IRepository<T> where T : class
+  public class Repository<T> : IRepository<T> where T : BaseEntity
   {
     private readonly TherapyDbContext _context;
     private readonly DbSet<T> _dbSet;
@@ -171,19 +172,25 @@ namespace Therapy.Infrastructure.Repositories {
         await SaveChangesAsync();
     }
 
-    /// <summary>
-    /// Removes an entity from the repository.
-    /// </summary>
-    /// <param name="entity">The entity id to remove.</param>
-    public async Task DeleteAsync(int id)
-    {
+    private async Task SoftDeleteAsync(int id) {
         var entity = await GetByIdAsync(id);
         if (entity == null)
         {
             throw new NotFoundException(id);
         }
 
-        await DeleteAsync(entity);
+        entity.IsDeleted = true;
+
+        await UpdateAsync(entity);
+    }
+
+    /// <summary>
+    /// Removes an entity from the repository.
+    /// </summary>
+    /// <param name="entity">The entity id to remove.</param>
+    public async Task DeleteAsync(int id)
+    {
+        await SoftDeleteAsync(id);
     }
 
     /// <summary>

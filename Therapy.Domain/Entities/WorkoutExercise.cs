@@ -7,8 +7,8 @@ namespace Therapy.Domain.Entities
 
     public int ExerciseId { get; set; }
     public virtual Exercise Exercise { get; set; }
-    public int Sets { get; set; }
-    public int Reps { get; set; }
+    public Int16 Sets { get; set; }
+    public Int16 Reps { get; set; }
     public TimeSpan? Duration { get; set; }
   }
 }

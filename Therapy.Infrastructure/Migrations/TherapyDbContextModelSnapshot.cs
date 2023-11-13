@@ -44,6 +44,9 @@ namespace Therapy.Infrastructure.Migrations
                         .HasMaxLength(8000)
                         .HasColumnType("VARCHAR");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -93,6 +96,9 @@ namespace Therapy.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -114,11 +120,11 @@ namespace Therapy.Infrastructure.Migrations
                     b.Property<TimeSpan?>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<int>("Reps")
-                        .HasColumnType("int");
+                    b.Property<short>("Reps")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("Sets")
-                        .HasColumnType("int");
+                    b.Property<short>("Sets")
+                        .HasColumnType("smallint");
 
                     b.HasKey("WorkoutId", "ExerciseId");
 

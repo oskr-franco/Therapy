@@ -16,6 +16,5 @@ namespace Therapy.Domain.Entities
       public string? Instructions { get; set; }
       public ICollection<Media> Media { get; set; }
       public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; }
-
   }
 }

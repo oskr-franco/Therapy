@@ -36,10 +36,16 @@ namespace Therapy.Infrastructure.Data {
                 .HasOne(we => we.Exercise)
                 .WithMany(e => e.WorkoutExercises)
                 .HasForeignKey(we => we.ExerciseId);
+                // This is to avoid deleting exercises that has more references in other workouts
+                // .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Workout>()
                 .Property(w => w.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
+
+            // Global query filter for soft deleted entities
+            modelBuilder.Entity<Exercise>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Workout>().HasQueryFilter(e => !e.IsDeleted);
             
             base.OnModelCreating(modelBuilder);
         }

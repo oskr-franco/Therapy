@@ -8,8 +8,8 @@ namespace Therapy.Domain.DTOs.WorkoutExercise
         public string Name { get; set; }
         public string Description { get; set; }
         public string? Instructions { get; set; }
-        public int Sets { get; set; }
-        public int Reps { get; set; }
+        public Int16 Sets { get; set; }
+        public Int16 Reps { get; set; }
         public TimeSpan? Duration { get; set; }
     }
 }
