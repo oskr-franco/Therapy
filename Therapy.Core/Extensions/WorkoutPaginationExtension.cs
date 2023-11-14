@@ -9,7 +9,7 @@ namespace Therapy.Core.Extensions
       this IRepository<Workout> repository,
       WorkoutPaginationFilter filter)
     {
-      if (filter.includeExerciseDetails)
+      if (filter.includeMedia)
       {
         return repository.AsQueryable(
           include: e => 
