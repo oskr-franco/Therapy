@@ -11,9 +11,20 @@ namespace Therapy.Core.Extensions
     {
       if (filter.includeExerciseDetails)
       {
-        return repository.AsQueryable(include: e => e.Include(x => x.WorkoutExercises).ThenInclude(we => we.Exercise));
+        return repository.AsQueryable(
+          include: e => 
+            e.Include(x => x.WorkoutExercises)
+              .ThenInclude(we => we.Exercise)
+              .ThenInclude(e => e.Media)
+              // .IgnoreQueryFilters()
+        );
       }
-      return repository.AsQueryable(include: e => e.Include(x => x.WorkoutExercises));
+      return repository.AsQueryable(
+        include: 
+          e => e.Include(x => x.WorkoutExercises)
+            .ThenInclude(we => we.Exercise)
+            // .IgnoreQueryFilters()
+        );
     }
   }
 }

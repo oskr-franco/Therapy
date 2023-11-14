@@ -22,7 +22,7 @@ namespace Therapy.Infrastructure.Repositories {
     /// <param name="id">The ID of the entity to retrieve.</param>
     public async Task<T> GetByIdAsync(int id)
     {
-        return await _dbSet.FindAsync(id);
+        return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace Therapy.Infrastructure.Repositories {
             query = include(query);
         }
 
-        return await query.FirstOrDefaultAsync(GetLambdaByID(id));
+        return await query.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace Therapy.Infrastructure.Repositories {
     public IQueryable<T> AsQueryable(Func<IQueryable<T>, IQueryable<T>> include)
     {
         var query = _dbSet.AsQueryable();
-
+        query = query.Where(e => !e.IsDeleted);
         if (include != null)
         {
             query = include(query);

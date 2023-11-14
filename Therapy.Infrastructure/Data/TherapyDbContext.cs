@@ -44,8 +44,8 @@ namespace Therapy.Infrastructure.Data {
                 .HasDefaultValueSql("GETDATE()");
 
             // Global query filter for soft deleted entities
-            modelBuilder.Entity<Exercise>().HasQueryFilter(e => !e.IsDeleted);
-            modelBuilder.Entity<Workout>().HasQueryFilter(e => !e.IsDeleted);
+            // modelBuilder.Entity<Exercise>().HasQueryFilter(e => !e.IsDeleted);
+            // modelBuilder.Entity<Workout>().HasQueryFilter(e => !e.IsDeleted);
             
             base.OnModelCreating(modelBuilder);
         }

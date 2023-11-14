@@ -28,6 +28,7 @@ namespace Therapy.Core.Services.Workouts {
                     x => x.Include(e => e.WorkoutExercises)
                             .ThenInclude(we => we.Exercise)
                             .ThenInclude(e => e.Media)
+                            // .IgnoreQueryFilters()
             );
             return _mapper.Map<WorkoutDTO>(workout);
         }
