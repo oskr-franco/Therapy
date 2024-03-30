@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Therapy.Domain.DTOs.WorkoutExercise;
 
 namespace Therapy.Domain.DTOs.Workout {
-  public class WorkoutDTO
+  public class WorkoutDTO : SlugDTO
   {
     public int Id { get; set; }
     [MaxLength(200)]

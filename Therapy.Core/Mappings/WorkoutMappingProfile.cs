@@ -1,4 +1,5 @@
 using AutoMapper;
+using Therapy.Core.Extensions.Workouts;
 using Therapy.Domain.DTOs.Media;
 using Therapy.Domain.DTOs.Workout;
 using Therapy.Domain.DTOs.WorkoutExercise;
@@ -9,9 +10,9 @@ namespace Therapy.Core.Mappings {
     public WorkoutMappingProfile() {
       CreateMap<WorkoutCreateDTO, Workout>();
       CreateMap<WorkoutExerciseCreateDTO, WorkoutExercise>();
-      CreateMap<Workout, WorkoutDTO>();
+      CreateMap<Workout, WorkoutDTO>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.GetSlug()));
       CreateMap<WorkoutExercise, WorkoutExerciseDTO>()
-            .ForMember(dest => dest.ExerciseId, opt => opt.MapFrom(src => src.Exercise != null ? src.Exercise.Id : src.ExerciseId))
+        .ForMember(dest => dest.ExerciseId, opt => opt.MapFrom(src => src.Exercise != null ? src.Exercise.Id : src.ExerciseId))
         // Map Exercise properties using AfterMap
         .AfterMap((src, dest, context) =>
         {

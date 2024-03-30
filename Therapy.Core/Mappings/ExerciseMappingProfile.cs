@@ -2,6 +2,7 @@ using AutoMapper;
 using Therapy.Domain.DTOs.Exercise;
 using Therapy.Domain.DTOs.Media;
 using Therapy.Domain.Entities;
+using Therapy.Core.Extensions.Exercises;
 
 namespace Therapy.Core.Mappings
 {
@@ -11,7 +12,7 @@ namespace Therapy.Core.Mappings
         {
             CreateMap<ExerciseCreateDTO, Exercise>();
             CreateMap<MediaCreateDTO, Media>();
-            CreateMap<Exercise, ExerciseDTO>();
+            CreateMap<Exercise, ExerciseDTO>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.GetSlug()));
             CreateMap<Media, MediaDTO>();
             CreateMap<ExerciseUpdateDTO, Exercise>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
