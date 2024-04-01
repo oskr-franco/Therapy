@@ -13,10 +13,5 @@ namespace Therapy.Core.Extensions.WorkoutExercises
                 order++;
             }
         }
-
-        public static void Order(this ICollection<WorkoutExercise> workoutExercises)
-        {
-            workoutExercises.OrderBy(we => we.Order);
-        }
     }
 }

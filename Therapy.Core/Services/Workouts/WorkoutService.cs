@@ -30,7 +30,6 @@ namespace Therapy.Core.Services.Workouts {
                             .ThenInclude(we => we.Exercise)
                             .ThenInclude(e => e.Media)
             );
-            workout.WorkoutExercises.Order();
             return _mapper.Map<WorkoutDTO>(workout);
         }
 

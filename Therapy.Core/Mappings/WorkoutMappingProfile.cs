@@ -10,10 +10,18 @@ namespace Therapy.Core.Mappings {
     public WorkoutMappingProfile() {
       CreateMap<WorkoutCreateDTO, Workout>();
       CreateMap<WorkoutExerciseCreateDTO, WorkoutExercise>();
-      CreateMap<Workout, WorkoutDTO>().ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.GetSlug()));
+      CreateMap<Workout, WorkoutDTO>()
+        .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.GetSlug()))
+        .AfterMap((src, dest, context) => {
+          if (src.WorkoutExercises != null) {
+            dest.WorkoutExercises = src.WorkoutExercises
+                                      .OrderBy(we => we.Order)
+                                      .Select(we => context.Mapper.Map<WorkoutExerciseDTO>(we))
+                                      .ToList();
+          }
+        });
       CreateMap<WorkoutExercise, WorkoutExerciseDTO>()
         .ForMember(dest => dest.ExerciseId, opt => opt.MapFrom(src => src.Exercise != null ? src.Exercise.Id : src.ExerciseId))
-        // Map Exercise properties using AfterMap
         .AfterMap((src, dest, context) =>
         {
             if (src == null || src.Exercise == null) return;
