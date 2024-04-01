@@ -7,6 +7,7 @@ using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
 using Therapy.Domain.Models;
 using Therapy.Infrastructure.Repositories;
+using Therapy.Core.Extensions.WorkoutExercises;
 
 namespace Therapy.Core.Services.Workouts {
     public class WorkoutService : IWorkoutService
@@ -28,8 +29,8 @@ namespace Therapy.Core.Services.Workouts {
                     x => x.Include(e => e.WorkoutExercises)
                             .ThenInclude(we => we.Exercise)
                             .ThenInclude(e => e.Media)
-                            // .IgnoreQueryFilters()
             );
+            workout.WorkoutExercises.Order();
             return _mapper.Map<WorkoutDTO>(workout);
         }
 
@@ -48,9 +49,11 @@ namespace Therapy.Core.Services.Workouts {
             return workouts;
         }
 
-        public async Task<WorkoutDTO> AddAsync(WorkoutCreateDTO workout)
+        public async Task<WorkoutDTO> AddAsync(WorkoutCreateDTO workoutDTO)
         {
-           var updatedWorkout = await _workoutRepository.AddAsync(_mapper.Map<Workout>(workout));
+           var workout = _mapper.Map<Workout>(workoutDTO);
+           workout.WorkoutExercises.SetOrder();
+           var updatedWorkout = await _workoutRepository.AddAsync(workout);
            return _mapper.Map<WorkoutDTO>(updatedWorkout);
         }
 
@@ -70,6 +73,7 @@ namespace Therapy.Core.Services.Workouts {
                 throw new NotFoundException(nameof(Exercise), id);
             }
             _mapper.Map(workout, existingWorkout);
+            existingWorkout.WorkoutExercises.SetOrder();
             await _workoutRepository.UpdateAsync(existingWorkout);
         }
     }
