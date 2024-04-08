@@ -1,4 +1,5 @@
 using AutoMapper;
+using Therapy.Core.Extensions.WorkoutExercises;
 using Therapy.Core.Extensions.Workouts;
 using Therapy.Domain.DTOs.Media;
 using Therapy.Domain.DTOs.Workout;
@@ -14,8 +15,7 @@ namespace Therapy.Core.Mappings {
         .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.GetSlug()))
         .AfterMap((src, dest, context) => {
           if (src.WorkoutExercises != null) {
-            dest.WorkoutExercises = src.WorkoutExercises
-                                      .OrderBy(we => we.Order)
+            dest.WorkoutExercises = src.WorkoutExercises.Order()
                                       .Select(we => context.Mapper.Map<WorkoutExerciseDTO>(we))
                                       .ToList();
           }
