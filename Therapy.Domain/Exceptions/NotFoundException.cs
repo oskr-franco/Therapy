@@ -12,5 +12,11 @@ namespace Therapy.Domain.Exceptions
         {
             this.StatusCode = (int)ExceptionStatusCode.NotFound;
         }
+
+        public NotFoundException(string entityName)
+            : base($"The {entityName} was not found.")
+        {
+            this.StatusCode = (int)ExceptionStatusCode.NotFound;
+        }
     }
 }

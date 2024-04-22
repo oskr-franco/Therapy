@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Therapy.Domain.Exceptions;
 
 namespace Therapy.API.Middleware
@@ -10,14 +11,17 @@ namespace Therapy.API.Middleware
         /// <summary>
         /// Message of the exception.
         /// </summary>
-        public string Message { get; set; }
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
         /// <summary>
         /// Errors that are specific to validation exceptions.
         /// </summary>
+        [JsonPropertyName("errors")]
         public IEnumerable<string>? Errors { get; set; }
         /// <summary>
         /// Status code of the exception.
         /// </summary>
+        [JsonPropertyName("status")]
         public int StatusCode { get; set; }
         /// <summary>
         /// Converts the error response to a string.
@@ -25,7 +29,7 @@ namespace Therapy.API.Middleware
         /// <param name="ex">The exception to convert.</param>
         public ErrorResponse(Exception ex)
         {
-            this.Message = ex.Message;
+            this.Title = ex.Message;
             this.StatusCode = (int)ExceptionStatusCode.InternalServerError;
         }
         /// <summary>
@@ -34,7 +38,7 @@ namespace Therapy.API.Middleware
         /// <param name="ex">The exception to convert.</param>
         public ErrorResponse(TherapyException ex)
         {
-            this.Message = ex.Message;
+            this.Title = ex.Message;
             this.StatusCode = ex.StatusCode;
         }
         /// <summary>
@@ -43,7 +47,7 @@ namespace Therapy.API.Middleware
         /// <param name="ex">The exception to convert.</param>
         public ErrorResponse(ValidationException ex)
         {
-            this.Message = ex.Message;
+            this.Title = ex.Message;
             this.StatusCode = ex.StatusCode;
             this.Errors = ex.Errors;
         }

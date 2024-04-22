@@ -1,10 +1,17 @@
-using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
 using Therapy.API.Middleware;
 using Therapy.Core.Mappings;
+using Therapy.Core.Services.Accounts;
 using Therapy.Core.Services.Exercises;
+using Therapy.Core.Services.Tokens;
+using Therapy.Core.Services.Users;
 using Therapy.Core.Services.Workouts;
+using Therapy.Domain.Entities;
 using Therapy.Infrastructure.Data;
 using Therapy.Infrastructure.Repositories;
 
@@ -27,6 +34,9 @@ namespace TherapyAPI
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IExerciseService, ExerciseService>();
             services.AddTransient<IWorkoutService, WorkoutService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddAutoMapper(typeof(ExerciseMappingProfile));
 
@@ -34,10 +44,46 @@ namespace TherapyAPI
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
+            // JWT configuration
+            var TokenSettingsSection = Configuration.GetSection("TokenSettings");
+            services.Configure<TokenSettings>(TokenSettingsSection);
+            var token = TokenSettingsSection.Get<TokenSettings>();
+            var key = Encoding.UTF8.GetBytes(token.Secret);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidAudience = token.Audience,
+                        ValidIssuer = token.Issuer,
+                        ClockSkew = TimeSpan.Zero, // No tolerance for expiration time.
+                        RequireExpirationTime = true, // Require a token to have an expiration time.
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            Console.WriteLine("OnAuthenticationFailed: " +
+                                context.Exception.Message);
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            Console.WriteLine("OnTokenValidated: " +
+                                context.SecurityToken);
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
             // Swagger configuration
             services.AddSwaggerGen(options => {
-                options.SwaggerDoc("v1", new OpenApiInfo
-                {
+                options.SwaggerDoc("v1", new OpenApiInfo {
                     Version = "v1",
                     Title = "Therapy API",
                     Description = "The Therapy API is an ASP.NET Core Web API for managing therapy exercises.  The API is designed to be used by therapists and their patients to track progress and manage therapy exercises.",
@@ -56,8 +102,28 @@ namespace TherapyAPI
                 // using System.Reflection;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
-
             // End Swagger configuration
         }
 
@@ -72,6 +138,8 @@ namespace TherapyAPI
             // app.UsePathBase(new PathString("/api"));
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

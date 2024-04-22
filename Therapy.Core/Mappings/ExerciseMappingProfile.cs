@@ -17,7 +17,6 @@ namespace Therapy.Core.Mappings
             CreateMap<ExerciseUpdateDTO, Exercise>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<MediaUpdateDTO, Media>();
-            
         }
     }
 }

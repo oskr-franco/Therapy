@@ -29,13 +29,10 @@ namespace Therapy.Infrastructure.Repositories {
     /// Retrieves an entity of type TEntity by its ID.
     /// </summary>
     /// <param name="id">The ID of the entity to retrieve.</param>
-   public async Task<T> GetByIdAsync(int id, Func<IQueryable<T>, IQueryable<T>> include = null)
+   public async Task<T> GetByIdAsync(int id, Func<IQueryable<T>, IQueryable<T>> include)
     {
         var query = _dbSet.AsQueryable();
-        if (include != null)
-        {
-            query = include(query);
-        }
+        query = include(query);
 
         return await query.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
     }
@@ -45,7 +42,8 @@ namespace Therapy.Infrastructure.Repositories {
     /// </summary>
     public IQueryable<T> AsQueryable()
     {
-        return _dbSet.AsQueryable();
+        var query = _dbSet.AsQueryable();
+        return query.Where(e => !e.IsDeleted);
     }
 
     /// <summary>

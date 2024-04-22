@@ -17,7 +17,13 @@ namespace Therapy.Domain.Exceptions
         {
             this.Errors = new List<string> { error };
             this.StatusCode = (int)ExceptionStatusCode.BadRequest;
+        }
 
+        public ValidationException(string error, string message)
+            : base(message)
+        {
+            this.Errors = new List<string> { error };
+            this.StatusCode = (int)ExceptionStatusCode.BadRequest;
         }
     }
 }

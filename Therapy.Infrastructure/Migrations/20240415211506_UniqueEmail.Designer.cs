@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Therapy.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Therapy.Infrastructure.Data;
 namespace Therapy.Infrastructure.Migrations
 {
     [DbContext(typeof(TherapyDbContext))]
-    partial class TherapyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240415211506_UniqueEmail")]
+    partial class UniqueEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +128,7 @@ namespace Therapy.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(200)
+                        .HasMaxLength(320)
                         .HasColumnType("VARCHAR");
 
                     b.Property<string>("FirstName")
@@ -143,7 +146,7 @@ namespace Therapy.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(80)
+                        .HasMaxLength(74)
                         .HasColumnType("VARCHAR");
 
                     b.Property<int?>("UserTypeId")

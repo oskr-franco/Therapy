@@ -67,7 +67,7 @@ namespace Therapy.Core.Services.Workouts {
                 throw new ValidationException("Exercise ID does not match");
             }
             var existingWorkout = await _workoutRepository.GetByIdAsync(id, include: x=> x.Include(e => e.WorkoutExercises));
-             if (existingWorkout == null)
+            if (existingWorkout == null)
             {
                 throw new NotFoundException(nameof(Exercise), id);
             }

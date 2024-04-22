@@ -1,6 +1,8 @@
 using System.Net;
 using Therapy.Domain.Exceptions;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace Therapy.API.Middleware {
     /// <summary>
@@ -46,6 +48,20 @@ namespace Therapy.API.Middleware {
             {
                 context.Response.StatusCode = therapyException.StatusCode;
                 errorResponse = new ErrorResponse(therapyException);
+            }
+            else if(ex is DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException is SqlException sqlException  && sqlException.Number == 2601)
+                {
+                    var error = new ValidationException("The entity already exists.");
+                    context.Response.StatusCode = error.StatusCode;
+                    errorResponse = new ErrorResponse(error);
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    errorResponse = new ErrorResponse(dbUpdateException);
+                }
             }
             else
             {
