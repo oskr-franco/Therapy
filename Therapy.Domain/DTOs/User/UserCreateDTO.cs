@@ -15,6 +15,5 @@ namespace Therapy.Domain.DTOs.User
     public string FirstName { get; set; }
     [Required]
     public string LastName { get; set; }
-    public int? UserTypeId { get; set; }
   }
 }

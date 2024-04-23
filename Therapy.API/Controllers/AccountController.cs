@@ -17,6 +17,13 @@ public class AccountController: ApiController {
         _accountService = accountService;
     }
 
+    /// <summary>
+    /// Registers a new account.
+    /// </summary>
+    /// <param name="request">The account to register.</param>
+    /// <returns>Ok if the account was created</returns>
+    /// <response code="200">Returns Ok if the account was created.</response>
+    /// <response code="400">If the account was not created.</response>
     [AllowAnonymous]
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,6 +38,13 @@ public class AccountController: ApiController {
         return Ok();
     }
 
+    /// <summary>
+    /// Logs in a user.
+    /// </summary>
+    /// <param name="request">The login request.</param>
+    /// <returns>The access token.</returns>
+    /// <response code="200">Returns the access token.</response>
+    /// <response code="400">If the login failed.</response>
     [AllowAnonymous]
     [HttpPost("Login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -41,6 +55,13 @@ public class AccountController: ApiController {
         return Ok(accessToken);
     }
 
+    /// <summary>
+    /// Refreshes a token.
+    /// </summary>
+    /// <param name="request">The refresh token request.</param>
+    /// <returns>The access token.</returns>
+    /// <response code="200">Returns the access token.</response>
+    /// <response code="400">If the token was not refreshed.</response>
     [AllowAnonymous]
     [HttpPost("Refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
