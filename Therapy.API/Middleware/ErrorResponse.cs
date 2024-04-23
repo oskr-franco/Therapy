@@ -17,7 +17,7 @@ namespace Therapy.API.Middleware
         /// Errors that are specific to validation exceptions.
         /// </summary>
         [JsonPropertyName("errors")]
-        public IEnumerable<string>? Errors { get; set; }
+        public Dictionary<string, IEnumerable<string>>? Errors { get; set; }
         /// <summary>
         /// Status code of the exception.
         /// </summary>

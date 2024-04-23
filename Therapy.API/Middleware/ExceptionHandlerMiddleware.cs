@@ -53,7 +53,7 @@ namespace Therapy.API.Middleware {
             {
                 if (dbUpdateException.InnerException is SqlException sqlException  && sqlException.Number == 2601)
                 {
-                    var error = new ValidationException("The entity already exists.");
+                    var error = new ValidationException("Entity", "The entity already exists.");
                     context.Response.StatusCode = error.StatusCode;
                     errorResponse = new ErrorResponse(error);
                 }

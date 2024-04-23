@@ -52,7 +52,7 @@ namespace Therapy.Core.Services.Users {
                             .FirstOrDefaultAsync( e => 
                                 e.Email == email);
           if (user == null || !Hasher.Verify(user.Password, password)) {
-            throw new ValidationException("Password does not match");
+            throw new ValidationException(nameof(user.Password),"Password does not match");
           }
           return _mapper.Map<UserDTO>(user);
         }
@@ -75,8 +75,13 @@ namespace Therapy.Core.Services.Users {
         public async Task<UserDTO> AddAsync(UserCreateDTO userDTO)
         {
             var user = _mapper.Map<User>(userDTO);
-            var updatedUser = await _userRepository.AddAsync(user);
-            return _mapper.Map<UserDTO>(updatedUser);
+            try {
+                var updatedUser = await _userRepository.AddAsync(user);
+                return _mapper.Map<UserDTO>(updatedUser);
+            }
+            catch (DbUpdateException) {
+                throw new ValidationException(nameof(user.Email), "Email already exists");
+            }
         }
 
         public async Task DeleteAsync(int id)
@@ -87,7 +92,7 @@ namespace Therapy.Core.Services.Users {
         public async Task UpdateAsync(int id, UserUpdateDTO user)
         {
             if(id != user.Id) {
-                throw new ValidationException("User ID does not match");
+                throw new ValidationException(nameof(user.Id), "User ID does not match");
             }
             var existingUser = await _userRepository.GetByIdAsync(id, include: x => x.Include(e => e.RefreshToken));
             if (existingUser == null)

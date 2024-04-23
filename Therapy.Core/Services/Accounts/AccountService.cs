@@ -26,7 +26,7 @@ namespace Therapy.Core.Services.Accounts {
         {
           var user = await _userService.GetByEmailAndPasswordAsync(credentials.Email, credentials.Password);
           if (user == null) {
-              throw new ValidationException("Invalid email or password");
+              throw new ValidationException(nameof(user.Email), "Invalid email or password");
           }
           
           var token = _tokenService.GenerateToken(
@@ -48,7 +48,7 @@ namespace Therapy.Core.Services.Accounts {
           var claimsPrincipal =  _tokenService.GetClaimsFromToken(token: token, validateLifetime: false);
           var id = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
           if (claimsPrincipal == null || id == null) {
-              throw new ValidationException("Invalid token");
+              throw new ValidationException(nameof(token), "Invalid token");
           }
 
           var user = await _userService.GetByIdAndRefreshToken(int.Parse(id.Value), refreshToken);
@@ -58,7 +58,7 @@ namespace Therapy.Core.Services.Accounts {
           }
 
           if (!user.RefreshToken.IsActive) {
-              throw new ValidationException("Refresh token has expired.");
+              throw new ValidationException(nameof(user.RefreshToken), "Refresh token has expired.");
           }
 
           var accessToken = _tokenService.GenerateToken(new ClaimsIdentity(claimsPrincipal.Claims));

@@ -55,7 +55,7 @@ namespace Therapy.Core.Services.Exercises {
         public async Task UpdateAsync(int id, ExerciseUpdateDTO exercise)
         {
             if(id != exercise.Id) {
-                throw new ValidationException("Exercise ID does not match");
+                throw new ValidationException(nameof(exercise.Id),"Exercise ID does not match");
             }
             var existingExercise = await _exerciseRepository.GetByIdAsync(id, include: x => x.Include(e => e.Media));
              if (existingExercise == null)
