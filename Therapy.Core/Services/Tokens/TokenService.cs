@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Therapy.Core.Utils;
 using Therapy.Domain.DTOs.Account;
 using Therapy.Domain.Entities;
 using Therapy.Domain.Exceptions;
@@ -33,7 +34,7 @@ namespace Therapy.Core.Services.Tokens
 
         return new AccessToken {
             Token = tokenHandler.WriteToken(token),
-            ExpiresIn = _tokenSettings.AccessExpiration,
+            ExpiresIn = Converter.FromMinutesToMilliseconds(_tokenSettings.AccessExpiration),
             RefreshToken = GenerateRandomToken()
         };
     }
