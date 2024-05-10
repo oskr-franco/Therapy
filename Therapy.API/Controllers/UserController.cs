@@ -41,9 +41,6 @@ public class UserController: ApiController {
       return Unauthorized();
     }
     var exercises = await _exerciseService.GetByUserIdAsync((int)userId, filter);
-    if (exercises == null || exercises.Data.Count() == 0) {
-        return NotFound();
-    }
     return Ok(exercises);
   }
   
@@ -62,9 +59,6 @@ public class UserController: ApiController {
       return Unauthorized();
     }
     var workouts = await _workoutService.GetByUserIdAsync((int)userId, filter);
-    if (workouts == null || workouts.Data.Count() == 0) {
-        return NotFound();
-    }
     return Ok(workouts);
   }
 }
