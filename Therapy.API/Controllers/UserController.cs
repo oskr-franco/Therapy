@@ -8,6 +8,9 @@ using Therapy.Domain.DTOs.Exercise;
 using Therapy.Domain.DTOs.Workout;
 using Therapy.Domain.Models;
 
+/// <summary>
+/// Controller for managing user data.
+/// </summary>
 public class UserController: ApiController {
   private readonly IExerciseService _exerciseService;
   private readonly IWorkoutService _workoutService;
@@ -29,7 +32,7 @@ public class UserController: ApiController {
   /// </summary>
   /// <param name="filter"></param>
   /// <returns></returns>
-  [HttpGet("/Exercises/")]
+  [HttpGet("Exercise")]
   [ProducesResponseType(typeof(PaginationResponse<ExerciseDTO>), StatusCodes.Status200OK)]
   [Authorize(Roles = "Admin")]
   public async Task<IActionResult> GetExercises([FromQuery] PaginationFilter filter) {
@@ -50,7 +53,7 @@ public class UserController: ApiController {
   /// </summary>
   /// <param name="filter"></param>
   /// <returns></returns>
-  [HttpGet("/Workout/")]
+  [HttpGet("Workout")]
   [ProducesResponseType(typeof(PaginationResponse<WorkoutDTO>), StatusCodes.Status200OK)]
   [Authorize(Roles = "Admin")]
   public async Task<IActionResult> GetWorkouts([FromQuery] PaginationFilter filter) {
