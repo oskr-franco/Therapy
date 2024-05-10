@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Therapy.Domain.Entities
 {
-  public class Workout: BaseEntity
+  public class Workout: BaseWithCreatedBy
   {
     [Column(TypeName = "VARCHAR")]
     [MaxLength(200)]

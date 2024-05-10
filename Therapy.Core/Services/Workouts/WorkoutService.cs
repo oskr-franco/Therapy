@@ -33,11 +33,30 @@ namespace Therapy.Core.Services.Workouts {
             return _mapper.Map<WorkoutDTO>(workout);
         }
 
-        public async Task<PaginationResponse<WorkoutDTO>> GetAllAsync(WorkoutPaginationFilter filter)
+        public async Task<PaginationResponse<WorkoutDTO>> GetAllAsync(PaginationFilter filter)
         {
-            var workoutsQuery = _workoutRepository.AsQueryableIncludeByFilter(filter);
+            var workoutsQuery = _workoutRepository.AsQueryable(
+                include: e => e.Include(x => x.WorkoutExercises).ThenInclude(we => we.Exercise)
+            );
             var earliestDate = _workoutRepository.AsQueryable().Min(e => (DateTime?)e.CreatedAt);
             var latestDate = _workoutRepository.AsQueryable().Max(e => (DateTime?)e.CreatedAt);
+            var workouts =
+                    await workoutsQuery
+                    .Paginate(
+                      filter,
+                      (search) => e => e.Name.Contains(search)
+                    )
+                    .ToPaginationResponse<Workout, WorkoutDTO>(_mapper, earliestDate, latestDate);
+            return workouts;
+        }
+
+        public async Task<PaginationResponse<WorkoutDTO>> GetByUserIdAsync(int userId, PaginationFilter filter)
+        {
+            var workoutsQuery = _workoutRepository.AsQueryable(
+                include: e => e.Include(x => x.WorkoutExercises).ThenInclude(we => we.Exercise)
+            ).Where(e => e.CreatedBy == userId);
+            var earliestDate = _workoutRepository.AsQueryable().Where(e => e.CreatedBy == userId).Min(e => (DateTime?)e.CreatedAt);
+            var latestDate = _workoutRepository.AsQueryable().Where(e => e.CreatedBy == userId).Max(e => (DateTime?)e.CreatedAt);
             var workouts =
                     await workoutsQuery
                     .Paginate(

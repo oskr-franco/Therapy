@@ -45,6 +45,23 @@ namespace Therapy.Core.Services.Exercises {
             return exercises;
         }
 
+        public async Task<PaginationResponse<ExerciseDTO>> GetByUserIdAsync(int userId, PaginationFilter filter)
+        {
+            var exercisesQuery = _exerciseRepository.AsQueryable(
+                include: e => e.Include(x => x.Media)
+            ).Where(e => e.CreatedBy == userId);
+            var earliestDate = _exerciseRepository.AsQueryable().Where(e => e.CreatedBy == userId).Min(e => (DateTime?)e.CreatedAt);
+            var latestDate = _exerciseRepository.AsQueryable().Where(e => e.CreatedBy == userId).Max(e => (DateTime?)e.CreatedAt);
+            var exercises =
+                    await exercisesQuery
+                    .Paginate(
+                      filter,
+                      (search) => e => e.Name.Contains(search) || e.Description.Contains(search) || e.Instructions.Contains(search)
+                    )
+                    .ToPaginationResponse<Exercise, ExerciseDTO>(_mapper, earliestDate, latestDate);
+            return exercises;
+        }
+
         public async Task<ExerciseDTO> AddAsync(ExerciseCreateDTO exercise)
         {
             var exerciseDb = _mapper.Map<Exercise>(exercise);

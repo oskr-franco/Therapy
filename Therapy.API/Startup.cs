@@ -8,6 +8,7 @@ using System.Text;
 using Therapy.API.Middleware;
 using Therapy.Core.Mappings;
 using Therapy.Core.Services.Accounts;
+using Therapy.Core.Services.AuthAccessor;
 using Therapy.Core.Services.Exercises;
 using Therapy.Core.Services.Tokens;
 using Therapy.Core.Services.Users;
@@ -32,6 +33,8 @@ namespace TherapyAPI
             services.AddDbContext<TherapyDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IAuthAccessorService, AuthAccessorService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IExerciseService, ExerciseService>();
             services.AddTransient<IWorkoutService, WorkoutService>();

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Therapy.Core.Services.AuthAccessor;
 using Therapy.Core.Services.Tokens;
 using Therapy.Core.Services.Users;
 using Therapy.Domain.DTOs.Account;
@@ -16,7 +17,7 @@ namespace Therapy.Core.Services.Accounts {
             _userService = userService;
             _tokenService = tokenService;
         }
-        
+
         public Task<UserDTO> CreateAsync(RegisterDTO account)
         { 
           return _userService.AddAsync(account);

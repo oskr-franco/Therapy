@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Therapy.Core.Services.Exercises;
 using Therapy.Core.Utils;
@@ -27,6 +28,7 @@ public class ExerciseController : ApiController
     /// <response code="404">If no exercises are found.</response>
     [HttpGet]
     [ProducesResponseType(typeof(PaginationResponse<ExerciseDTO>), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationFilter filter)
     {
         var exercises = await _exerciseService.GetAllAsync(filter);
@@ -46,6 +48,7 @@ public class ExerciseController : ApiController
     /// <response code="404">If the exercise is not found.</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ExerciseDTO), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Get(int id)
     {
         var exercise = await _exerciseService.GetByIdAsync(id);
@@ -65,6 +68,7 @@ public class ExerciseController : ApiController
     /// <response code="404">If the exercise is not found.</response>
     [HttpGet("{slug}")]
     [ProducesResponseType(typeof(ExerciseDTO), StatusCodes.Status200OK)]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(string slug)
     {
         var id = SlugConverter.GetIdFromSlug(slug);
@@ -88,13 +92,9 @@ public class ExerciseController : ApiController
     /// <response code="500">If there was an internal server error.</response>
     [HttpPost]
     [ProducesResponseType(typeof(ExerciseDTO), StatusCodes.Status201Created)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] ExerciseCreateDTO exercise)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-    
         var response = await _exerciseService.AddAsync(exercise);
         return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
     }
@@ -111,13 +111,9 @@ public class ExerciseController : ApiController
     /// <response code="500">If there was an internal server error.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(int id, [FromBody] ExerciseUpdateDTO exercise)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-    
         await _exerciseService.UpdateAsync(id, exercise);
         return NoContent();
     }
@@ -132,6 +128,7 @@ public class ExerciseController : ApiController
     /// <response code="500">If there was an internal server error.</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _exerciseService.DeleteAsync(id);

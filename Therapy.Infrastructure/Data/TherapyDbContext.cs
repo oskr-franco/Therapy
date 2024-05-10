@@ -26,6 +26,12 @@ namespace Therapy.Infrastructure.Data {
                 .HasMany(e => e.Media)
                 .WithOne(m => m.Exercise)
                 .HasForeignKey(m => m.ExerciseId);
+            
+            modelBuilder.Entity<Exercise>()
+                .HasOne(e => e.Creator)
+                .WithMany() // We don't have reversed navigation from user
+                .HasForeignKey(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<WorkoutExercise>()
                 .HasKey(we => new { we.WorkoutId, we.ExerciseId });
@@ -43,6 +49,12 @@ namespace Therapy.Infrastructure.Data {
             modelBuilder.Entity<Workout>()
                 .Property(w => w.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<Workout>()
+                .HasOne(w => w.Creator)
+                .WithMany() // We don't have reversed navigation from user
+                .HasForeignKey(w => w.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
             
             modelBuilder.Entity<User>()
                 .HasOne(u => u.UserType)

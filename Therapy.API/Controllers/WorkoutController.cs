@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Therapy.Core.Services.Workouts;
 using Therapy.Core.Utils;
@@ -26,7 +27,8 @@ public class WorkoutController: ApiController {
     /// <response code="404">If no workouts are found.</response>
     [HttpGet]
     [ProducesResponseType(typeof(PaginationResponse<WorkoutDTO>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll([FromQuery] WorkoutPaginationFilter filter) {
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAll([FromQuery] PaginationFilter filter) {
         var workouts = await _workoutService.GetAllAsync(filter);
         if (workouts == null || workouts.Data.Count() == 0) {
             return NotFound();
@@ -43,6 +45,7 @@ public class WorkoutController: ApiController {
     /// <response code="404">If the workout is not found.</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(WorkoutDTO), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Get(int id) {
         var workout = await _workoutService.GetByIdAsync(id);
         if (workout == null) {
@@ -60,7 +63,8 @@ public class WorkoutController: ApiController {
     /// <response code="404">If the workout is not found.</response>
     [HttpGet("{slug}")]
     [ProducesResponseType(typeof(WorkoutDTO), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetBySlug(string slug) {
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(string slug) {
         var id = SlugConverter.GetIdFromSlug(slug);
         var workout = await _workoutService.GetByIdAsync(id);
         if (workout == null  || !slug.Equals(workout.Slug)) {
@@ -80,11 +84,8 @@ public class WorkoutController: ApiController {
     /// <response code="500">If the workout could not be created.</response>
     [HttpPost]
     [ProducesResponseType(typeof(WorkoutDTO), StatusCodes.Status201Created)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(WorkoutCreateDTO workout) {
-        if (!ModelState.IsValid) {
-            return BadRequest(ModelState);
-        }
-    
         var createdWorkout = await _workoutService.AddAsync(workout);
         return CreatedAtAction(nameof(Get), new { id = createdWorkout.Id }, createdWorkout);
     }
@@ -101,11 +102,8 @@ public class WorkoutController: ApiController {
     /// <response code="500">If the workout could not be updated.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(int id, WorkoutUpdateDTO workout) {
-        if (!ModelState.IsValid) {
-            return BadRequest(ModelState);
-        }
-    
         await _workoutService.UpdateAsync(id, workout);
         return NoContent();
     }
@@ -120,6 +118,7 @@ public class WorkoutController: ApiController {
     /// <response code="500">If the workout could not be deleted.</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id) {
         await _workoutService.DeleteAsync(id);
         return NoContent();
