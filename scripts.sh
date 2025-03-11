@@ -17,6 +17,15 @@ function add_package_api() {
   dotnet add Therapy.API/Therapy.API.csproj package $1
 }
 
+function add_package_core() {
+  if [ -z "$1" ]
+    then
+        echo "Error: No package name provided."
+        return 1
+    fi
+  dotnet add Therapy.Core/Therapy.Core.csproj package $1
+}
+
 function add_package_infra() {
   if [ -z "$1" ]
     then
