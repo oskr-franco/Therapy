@@ -56,3 +56,11 @@ function add_migration() {
 function update_database() {
   dotnet ef database update --startup-project therapy.API --project Therapy.Infrastructure
 }
+
+function build_docker() {
+  docker build -t therapy-api .
+}
+
+function run_docker() {
+  docker run -p 8080:5050 -e ASPNETCORE_ENVIRONMENT=Development therapy-api
+}
