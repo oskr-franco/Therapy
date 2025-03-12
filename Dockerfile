@@ -35,9 +35,10 @@ COPY --from=publish /app/publish .
 # Set default ASP.NET Core URLs inside the container
 ENV ASPNETCORE_URLS="http://+:5050"
 
-# Set environment variable for production
+# Set environment variable for runtime
 #ENV ASPNETCORE_ENVIRONMENT=Production
-#ENV ASPNETCORE_ENVIRONMENT=Development
+ARG ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=$ENVIRONMENT
 
 # Command to run the application
 ENTRYPOINT ["dotnet", "Therapy.API.dll"]

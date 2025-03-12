@@ -1,0 +1,53 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Environment Variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+            echo "ECS_CLUSTER=therapy-cluster-prod" >> $GITHUB_ENV
+            echo "ECS_SERVICE=therapy-api-service-prod" >> $GITHUB_ENV
+            echo "ECS_TASK=therapy-api-task-prod" >> $GITHUB_ENV
+            echo "ECR_REPO=therapy-api-prod" >> $GITHUB_ENV
+          else
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+            echo "ECS_CLUSTER=therapy-cluster-dev" >> $GITHUB_ENV
+            echo "ECS_SERVICE=therapy-api-service-dev" >> $GITHUB_ENV
+            echo "ECS_TASK=therapy-api-task-dev" >> $GITHUB_ENV
+            echo "ECR_REPO=therapy-api-dev" >> $GITHUB_ENV
+          fi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Authenticate with AWS ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}"
+          docker build -t $IMAGE_URI:latest --build-arg ENVIRONMENT=${{ env.ENVIRONMENT }} .
+          docker tag $IMAGE_URI:latest $IMAGE_URI:latest
+          docker push $IMAGE_URI:latest
+
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment

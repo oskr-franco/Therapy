@@ -1,5 +1,26 @@
 #!/bin/bash
 
+
+# Function to set environment variables
+function set_environment() {
+  ENVIRONMENT=${1:-dev}
+  if [[ "$ENVIRONMENT" == "prod" ]]; then
+    docker_tag="therapy-api-prod"
+    env_arg="Production"
+  else
+    docker_tag="therapy-api-dev"
+    env_arg="Development"
+  fi
+
+  # Print the variables
+  echo "ENVIRONMENT: $ENVIRONMENT"
+  echo "env_arg: $env_arg"
+  echo "docker_tag: $docker_tag"
+}
+
+# Call the function to set environment variables
+set_environment $1
+
 function run() {
   dotnet run --project Therapy.API
 }
@@ -58,9 +79,9 @@ function update_database() {
 }
 
 function build_docker() {
-  docker build -t therapy-api .
+  docker build -t "$docker_tag" --build-arg ENVIRONMENT="$env_arg" .
 }
 
 function run_docker() {
-  docker run -p 8080:5050 -e ASPNETCORE_ENVIRONMENT=Development therapy-api
+  docker run -p 8080:5050 $docker_tag
 }
