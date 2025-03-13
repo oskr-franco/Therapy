@@ -17,13 +17,13 @@ jobs:
       - name: Set Environment Variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+            echo "ENVIRONMENT=Production" >> $GITHUB_ENV
             echo "ECS_CLUSTER=therapy-cluster-prod" >> $GITHUB_ENV
             echo "ECS_SERVICE=therapy-api-service-prod" >> $GITHUB_ENV
             echo "ECS_TASK=therapy-api-task-prod" >> $GITHUB_ENV
             echo "ECR_REPO=therapy-api-prod" >> $GITHUB_ENV
           else
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+            echo "ENVIRONMENT=Development" >> $GITHUB_ENV
             echo "ECS_CLUSTER=therapy-cluster-dev" >> $GITHUB_ENV
             echo "ECS_SERVICE=therapy-api-service-dev" >> $GITHUB_ENV
             echo "ECS_TASK=therapy-api-task-dev" >> $GITHUB_ENV
