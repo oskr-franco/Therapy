@@ -135,13 +135,12 @@ namespace TherapyAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (true)
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            // app.UsePathBase(new PathString("/api"));
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
@@ -149,7 +148,6 @@ namespace TherapyAPI
 
             app.UseEndpoints(endpoints =>
             {
-                // endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "api/{controller=Home}/{action=Index}/{id?}");
