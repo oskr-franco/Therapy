@@ -5,6 +5,9 @@ on:
     branches:
       - dev
       - main
+    paths-ignore:
+      - "docs/**"  # Ignore all documentation changes
+      - "**/*.md"  # Ignore Markdown file changes
 
 jobs:
   deploy:
@@ -121,7 +124,8 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
       - name: Print ECS Task Details
-        if: false # Skip this step
+        # Skip this step
+        if: false
         run: |
           echo "ECS Task ARN: $TASK_ARN"
       
