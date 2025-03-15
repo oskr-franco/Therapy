@@ -54,7 +54,7 @@ jobs:
         run: |
           aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment
 
-      - name: Wait for ECS Task to Start
+      - name: Wait for ECS Task to Start and Get Public IP
         run: |
           TIMEOUT=300  # Max wait time in seconds (5 minutes)
           INTERVAL=15   # Time between status checks
@@ -121,6 +121,7 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
       - name: Print ECS Task Details
+        if: false # Skip this step
         run: |
           echo "ECS Task ARN: $TASK_ARN"
       
