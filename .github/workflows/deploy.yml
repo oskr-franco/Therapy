@@ -86,7 +86,7 @@ jobs:
           done
 
           # Get the latest task ARN based on `startedAt` timestamp
-          TASK_ARN=$(aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARNS --query "tasks[-1].taskArn" --output text)
+          TASK_ARN=$(aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARNS --query "tasks | sort_by(@, &createdAt) | [-1].taskArn" --output text)
 
           echo "🔍 Selecting the newest task..."
           echo "Newest ECS Task ARN: $TASK_ARN"
