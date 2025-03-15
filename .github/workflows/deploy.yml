@@ -22,12 +22,14 @@ jobs:
             echo "ECS_SERVICE=therapy-api-service-prod" >> $GITHUB_ENV
             echo "ECS_TASK=therapy-api-task-prod" >> $GITHUB_ENV
             echo "ECR_REPO=therapy-api-prod" >> $GITHUB_ENV
+            echo "HOSTED_RECORD_NAME=service.gyme.io" >> $GITHUB_ENV
           else
             echo "ENVIRONMENT=Development" >> $GITHUB_ENV
             echo "ECS_CLUSTER=therapy-cluster-dev" >> $GITHUB_ENV
             echo "ECS_SERVICE=therapy-api-service-dev" >> $GITHUB_ENV
             echo "ECS_TASK=therapy-api-task-dev" >> $GITHUB_ENV
             echo "ECR_REPO=therapy-api-dev" >> $GITHUB_ENV
+            echo "HOSTED_RECORD_NAME=dev.service.gyme.io" >> $GITHUB_ENV
           fi
 
       - name: Configure AWS Credentials
@@ -51,3 +53,98 @@ jobs:
       - name: Update ECS Service
         run: |
           aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment
+
+      - name: Wait for ECS Task to Start
+        run: |
+          TIMEOUT=300  # Max wait time in seconds (5 minutes)
+          INTERVAL=15   # Time between status checks
+          ELAPSED=0    # Time counter
+
+          echo "Waiting for at least 2 ECS tasks to be running..."
+
+          while true; do
+            TASK_ARNS=$(aws ecs list-tasks --cluster ${{ env.ECS_CLUSTER }} --service-name ${{ env.ECS_SERVICE }} --desired-status RUNNING --query "taskArns" --output text)
+
+            TASK_COUNT=$(echo "$TASK_ARNS" | wc -w)
+            
+            echo "Currently running tasks: $TASK_COUNT"
+            echo "Task ARNs: $TASK_ARNS"
+
+            if [ "$TASK_COUNT" -ge 2 ]; then
+              echo "✅ Found $TASK_COUNT running tasks."
+              break
+            fi
+
+            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+              echo "❌ ERROR: Timeout waiting for 2 running tasks."
+              exit 1
+            fi
+
+            echo "⏳ Still waiting... ($ELAPSED/$TIMEOUT seconds)"
+            sleep $INTERVAL
+            ELAPSED=$((ELAPSED + INTERVAL))
+          done
+
+          # Get the latest task ARN based on `startedAt` timestamp
+          TASK_ARN=$(aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARNS --query "tasks | sort_by(@, &createdAt) | [-1].taskArn" --output text)
+
+          echo "🔍 Selecting the newest task..."
+          echo "Newest ECS Task ARN: $TASK_ARN"
+
+          echo "TASK_ARN=$TASK_ARN" >> $GITHUB_ENV
+
+          if [ -z "$TASK_ARN" ] || [ "$TASK_ARN" == "None" ]; then
+            echo "❌ ERROR: No valid task found."
+            exit 1
+          fi
+
+          # Get the network interface ID of the task
+          ENI_ID=$(aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARN --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" --output text)
+
+          echo "🔍 Fetching Network Interface ID: $ENI_ID"
+
+          if [ -z "$ENI_ID" ] || [ "$ENI_ID" == "None" ]; then
+            echo "❌ ERROR: No ENI found for the task."
+            exit 1
+          fi
+
+          # Get the Public IP directly from describe-network-interfaces
+          echo "🔍 Fetching Public IP..."
+          PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --query "NetworkInterfaces[0].Association.PublicIp" --output text)
+
+          if [ -z "$PUBLIC_IP" ] || [ "$PUBLIC_IP" == "None" ]; then
+            echo "❌ ERROR: No Public IP found. Task might be in a private subnet."
+            exit 1
+          fi
+
+          echo "✅ ECS Task is now RUNNING with Public IP: $PUBLIC_IP"
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
+      - name: Print ECS Task Details
+        run: |
+          echo "ECS Task ARN: $TASK_ARN"
+      
+          if [ "$TASK_ARN" == "None" ] || [ -z "$TASK_ARN" ]; then
+            echo "ERROR: No task found for the service ${{ env.ECS_SERVICE }}."
+            exit 1
+          fi
+      
+          echo "ECS Task Details:"
+          aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARN --output json
+
+      - name: Update Route 53 DNS Record
+        run: |
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id ${{secrets.AWS_HOSTED_ZONE_ID}} \
+            --change-batch '
+            {
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "${{ env.HOSTED_RECORD_NAME }}",
+                  "Type": "A",
+                  "TTL": 300,
+                  "ResourceRecords": [{"Value": "'"$PUBLIC_IP"'"}]
+                }
+              }]
+            }'
