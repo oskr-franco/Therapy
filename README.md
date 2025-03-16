@@ -57,3 +57,54 @@ To run the API, navigate to the root of the repository and run:
 ```bash
 dotnet run --project Therapy.API
 ```
+
+## Sync and Deploy Workflows
+
+### Branch Synchronization (Sync Main into Dev)
+
+To keep the `dev` branch in sync with the `main` branch, a GitHub Actions workflow is set up. This workflow automatically merges changes from `main` to `dev`. If the automatic sync fails, you can manually sync by checking out the `dev` branch and running:
+
+```bash
+git checkout dev
+git merge main
+```
+
+### Automatic Deployment to AWS ECS
+
+Deployments are triggered automatically when changes are pushed to the `dev` or `main` branches. If you need to perform a manual deployment, you can use the following commands:
+
+```bash
+# Manual deployment steps
+```
+
+**Security Considerations**: Ensure that no sensitive information or secrets are exposed in your deployment configurations. Always use environment variables or secrets management tools to handle sensitive data.
+
+## Scripts Usage
+
+To use the `scripts.sh` file, source it in your terminal:
+
+```bash
+source scripts.sh
+```
+
+You can then run predefined functions as needed.
+
+### Available Functions in `scripts.sh`
+
+#### General Commands
+- `run`: Runs the API.
+- `build`: Builds the project.
+
+#### Package Management
+- `add_package_api <package>`: Adds a package to `Therapy.API`.
+- `add_package_core <package>`: Adds a package to `Therapy.Core`.
+- `add_package_infra <package>`: Adds a package to `Therapy.Infrastructure`.
+- `add_package_domain <package>`: Adds a package to `Therapy.Domain`.
+
+#### Database Management
+- `add_migration <name>`: Adds a new migration.
+- `update_database`: Updates the database schema.
+
+#### Docker Commands
+- `build_docker`: Builds the Docker image.
+- `run_docker`: Runs the API inside a Docker container.

@@ -21,6 +21,26 @@ function set_environment() {
 # Call the function to set environment variables
 set_environment $1
 
+# Scripts Usage:
+# - How to source the script: source scripts.sh
+# - Running predefined functions.
+
+# Available Functions in `scripts.sh`:
+# - General Commands:
+#   - run: Runs the API.
+#   - build: Builds the project.
+# - Package Management:
+#   - add_package_api <package>: Adds a package to Therapy.API.
+#   - add_package_core <package>: Adds a package to Therapy.Core.
+#   - add_package_infra <package>: Adds a package to Therapy.Infrastructure.
+#   - add_package_domain <package>: Adds a package to Therapy.Domain.
+# - Database Management:
+#   - add_migration <name>: Adds a new migration.
+#   - update_database: Updates the database schema.
+# - Docker Commands:
+#   - build_docker: Builds the Docker image.
+#   - run_docker: Runs the API inside a Docker container.
+
 function run() {
   dotnet run --project Therapy.API
 }
