@@ -26,6 +26,7 @@ jobs:
           git checkout dev
           if ! git merge --no-edit origin/main; then
             echo "Merge conflict detected! Manual resolution required." >> $GITHUB_STEP_SUMMARY
+            echo "Please refer to the documentation for manual sync instructions." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
           git push origin dev
